@@ -45,12 +45,14 @@ export const KineticHeadline = ({ text }: { text: string }) => {
     ? HERO_LINES[currentLine].slice(0, currentChar)
     : '';
 
-  const lineClass = (line: string) => {
-    if (line === '') return 'block h-4';
+  const lineClass = (line: string | undefined) => {
+    if (!line) return 'block h-4';
     if (line.startsWith('root@')) return 'block text-[#006622]';
     if (line.startsWith('>'))     return 'block text-[#00ff41] text-2xl sm:text-4xl font-bold tracking-tight glow';
     return 'block text-[#00cc33]';
   };
+
+  const currentLineInBounds = currentLine < HERO_LINES.length;
 
   return (
     <div className="font-mono" aria-label="I design intelligent systems and ship polished software products.">
@@ -60,7 +62,7 @@ export const KineticHeadline = ({ text }: { text: string }) => {
             {line}
           </span>
         ))}
-        {!done && (
+        {!done && currentLineInBounds && (
           <span className={lineClass(inProgressLine || HERO_LINES[currentLine])}>
             {inProgressLine}
             <span className="animate-blink">█</span>
