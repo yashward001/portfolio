@@ -34,67 +34,75 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
 
   return (
     <article className="mx-auto max-w-4xl space-y-8">
-      <Link href="/projects" className="focus-ring inline-flex items-center gap-2 text-sm text-muted hover:text-fg">
-        <ArrowLeft className="h-4 w-4" /> Back to projects
+      {/* Back link */}
+      <Link href="/projects" className="focus-ring inline-flex items-center gap-2 font-mono text-xs text-[#006622] transition-colors hover:text-[#00ff41]">
+        <ArrowLeft className="h-3 w-3" /> cd ../projects
       </Link>
+
+      {/* Terminal page header */}
+      <div className="border-b border-[#003d0f] pb-3">
+        <p className="font-mono text-xs text-[#006622]">
+          <span className="text-[#00ff41]">root@yst</span>
+          <span className="text-[#006622]">:~/projects$</span>
+          {' '}cat {project.slug}.md
+        </p>
+      </div>
 
       <ProjectGallery project={project} />
 
       <header className="space-y-4">
-        <h1 className="font-display text-4xl tracking-tight">{project.title}</h1>
-        <p className="text-muted">{project.summary}</p>
-        <div className="flex flex-wrap items-center gap-3 text-sm text-muted">
-          <span>{project.role}</span>
-          <span>•</span>
+        <h1 className="font-mono text-3xl font-bold uppercase tracking-wide text-[#00ff41]"
+          style={{ textShadow: '0 0 16px rgba(0,255,65,0.4)' }}>
+          {project.title}
+        </h1>
+        <p className="font-mono text-sm text-[#006622]">{project.summary}</p>
+
+        <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] text-[#006622]">
+          <span>ROLE: {project.role}</span>
+          <span className="text-[#003d0f]">|</span>
           <span>{formatDate(project.date)}</span>
-          <span>•</span>
+          <span className="text-[#003d0f]">|</span>
           <span className="inline-flex items-center gap-1">
-            <Clock3 className="h-4 w-4" /> {project.readingMinutes} min read
+            <Clock3 className="h-3 w-3" /> {project.readingMinutes} min read
           </span>
         </div>
-        <div className="flex flex-wrap gap-2">
+
+        <div className="flex flex-wrap gap-1.5">
           {project.tags.map((tag) => (
             <Badge key={tag}>{tag}</Badge>
           ))}
         </div>
-        <p className="font-medium text-success">{project.impactMetric}</p>
-        <div className="flex gap-3">
-          {project.links.repo ? (
-            <a
-              href={project.links.repo}
-              className="focus-ring inline-flex items-center gap-1 text-sm text-accent"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Github className="h-4 w-4" /> Repository
+
+        <div className="border border-[#003d0f] bg-[#0a0f0a] px-3 py-2">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">IMPACT: </span>
+          <span className="font-mono text-xs text-[#00cc33]">{project.impactMetric}</span>
+        </div>
+
+        <div className="flex gap-4">
+          {project.links.repo && (
+            <a href={project.links.repo} className="focus-ring inline-flex items-center gap-1 font-mono text-xs text-[#00cc33] transition-colors hover:text-[#00ff41]" target="_blank" rel="noreferrer">
+              <Github className="h-3 w-3" /> [REPOSITORY]
             </a>
-          ) : null}
-          {project.links.live || project.links.demo ? (
-            <a
-              href={project.links.live ?? project.links.demo ?? '#'}
-              className="focus-ring inline-flex items-center gap-1 text-sm text-accent"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <ArrowUpRight className="h-4 w-4" /> Live Demo
+          )}
+          {(project.links.live || project.links.demo) && (
+            <a href={project.links.live ?? project.links.demo ?? '#'} className="focus-ring inline-flex items-center gap-1 font-mono text-xs text-[#00cc33] transition-colors hover:text-[#00ff41]" target="_blank" rel="noreferrer">
+              <ArrowUpRight className="h-3 w-3" /> [LIVE DEMO]
             </a>
-          ) : null}
+          )}
         </div>
       </header>
 
-      <section className="grid gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted">Architecture</p>
-          <p className="mt-2 text-sm text-muted">System design, data flow, and implementation details are documented below.</p>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted">Tradeoffs</p>
-          <p className="mt-2 text-sm text-muted">Key technical choices and constraints are explicitly captured in each case study section.</p>
-        </div>
-        <div className="rounded-xl border border-border bg-card p-4">
-          <p className="text-xs uppercase tracking-[0.2em] text-muted">Impact Metrics</p>
-          <p className="mt-2 text-sm font-medium text-accent">{project.impactMetric}</p>
-        </div>
+      <section className="grid gap-3 md:grid-cols-3">
+        {[
+          { label: 'ARCHITECTURE', body: 'System design, data flow, and implementation details documented below.' },
+          { label: 'TRADEOFFS',    body: 'Key technical choices and constraints explicitly captured in each section.' },
+          { label: 'IMPACT',       body: project.impactMetric }
+        ].map(({ label, body }) => (
+          <div key={label} className="border border-[#003d0f] bg-[#0a0f0a] p-3">
+            <p className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">{label}</p>
+            <p className="mt-1.5 font-mono text-xs text-[#00cc33]">{body}</p>
+          </div>
+        ))}
       </section>
 
       <div className="prose">

@@ -10,10 +10,10 @@ type BadgeProps = {
 export const Badge = ({ children, className }: BadgeProps) => (
   <span
     className={cn(
-      'inline-flex items-center rounded-full border border-border bg-card px-2.5 py-1 text-xs font-medium text-muted',
+      'inline-flex items-center border border-[#003d0f] bg-black px-2 py-0.5 font-mono text-xs uppercase tracking-wider text-[#006622]',
       className
     )}
   >
-    {children}
+    [{children}]
   </span>
 );

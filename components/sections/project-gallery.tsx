@@ -18,56 +18,56 @@ export const ProjectGallery = ({ project }: { project: Project }) => {
   const content = useMemo(() => {
     if (active === 'overview') {
       return (
-        <div className="flex h-[320px] flex-col justify-center gap-4 rounded-2xl border border-border bg-card p-8 md:h-[420px]">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted">Project Overview</p>
-          <h2 className="font-display text-3xl leading-tight md:text-5xl">{project.title}</h2>
-          <p className="max-w-2xl text-sm text-muted">{project.summary}</p>
+        <div className="flex h-[280px] flex-col justify-center gap-4 border border-[#003d0f] bg-[#0a0f0a] p-8 md:h-[360px]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#006622]">{'// Project Overview'}</p>
+          <h2 className="font-mono text-2xl font-bold uppercase tracking-wide text-[#00ff41] md:text-4xl" style={{ textShadow: '0 0 12px rgba(0,255,65,0.3)' }}>{project.title}</h2>
+          <p className="max-w-2xl font-mono text-xs text-[#006622]">{project.summary}</p>
         </div>
       );
     }
 
     if (active === 'impact') {
       return (
-        <div className="flex h-[320px] flex-col justify-center gap-3 rounded-2xl border border-border bg-card p-8 text-center md:h-[420px]">
-          <p className="text-xs uppercase tracking-[0.22em] text-muted">Impact Metric</p>
-          <p className="font-display text-3xl text-accent md:text-5xl">{project.impactMetric}</p>
-          <p className="text-sm text-muted">Measured outcome reported in this case study.</p>
+        <div className="flex h-[280px] flex-col justify-center gap-3 border border-[#003d0f] bg-[#0a0f0a] p-8 text-center md:h-[360px]">
+          <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#006622]">{'// Impact'}</p>
+          <p className="font-mono text-lg font-bold text-[#00ff41] md:text-2xl">{project.impactMetric}</p>
+          <p className="font-mono text-xs text-[#006622]">Measured outcome reported in this case study.</p>
         </div>
       );
     }
 
     return (
-      <div className="flex h-[320px] flex-col justify-center gap-4 rounded-2xl border border-border bg-card p-8 md:h-[420px]">
-        <p className="text-xs uppercase tracking-[0.22em] text-muted">Core Stack</p>
-        <div className="flex flex-wrap gap-2">
+      <div className="flex h-[280px] flex-col justify-center gap-4 border border-[#003d0f] bg-[#0a0f0a] p-8 md:h-[360px]">
+        <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-[#006622]">{'// Core Stack'}</p>
+        <div className="flex flex-wrap gap-1.5">
           {project.stack.map((item) => (
-            <button
+            <span
               key={item}
-              type="button"
-              className="focus-ring rounded-full border border-border bg-bg px-3 py-1 text-sm text-muted transition hover:border-accent/60 hover:text-fg"
+              className="border border-[#003d0f] px-2.5 py-1 font-mono text-xs text-[#006622]"
             >
               {item}
-            </button>
+            </span>
           ))}
         </div>
-        <p className="text-sm text-muted">Interactive stack chips for quick technology scanning.</p>
       </div>
     );
   }, [active, project]);
 
   return (
     <section className="space-y-3">
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5">
         {variants.map((tab) => (
           <button
             key={tab.key}
             type="button"
-            className={`focus-ring rounded-full border px-3 py-1.5 text-sm ${
-              active === tab.key ? 'border-accent bg-accent/15 text-fg' : 'border-border bg-card text-muted hover:text-fg'
+            className={`focus-ring border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest transition-colors ${
+              active === tab.key
+                ? 'border-[#00ff41] bg-[#003d0f] text-[#00ff41]'
+                : 'border-[#003d0f] text-[#006622] hover:border-[#00ff41]/50 hover:text-[#00cc33]'
             }`}
             onClick={() => setActive(tab.key)}
           >
-            {tab.label}
+            [{tab.label}]
           </button>
         ))}
       </div>

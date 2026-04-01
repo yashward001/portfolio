@@ -2,84 +2,189 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --bg: 220 27% 97%;
-  --fg: 224 39% 11%;
-  --muted: 220 13% 42%;
-  --border: 220 23% 84%;
-  --card: 0 0% 100%;
-  --accent: 187 96% 61%;
-  --success: 146 62% 36%;
+/* ─── Terminal Colour System ─────────────────────────────────────────────── */
+:root,
+.dark {
+  --bg:      0 0% 0%;          /* #000000 — pure black              */
+  --card:    120 25% 6%;       /* #0a0f0a — panel background        */
+  --card2:   120 34% 8%;       /* #0d1a0d — hover state             */
+  --fg:      135 100% 50%;     /* #00ff41 — matrix green (headings) */
+  --muted:   138 100% 20%;     /* #006622 — muted green (meta)      */
+  --border:  135 100% 12%;     /* #003d0f — border / divider        */
+  --accent:  135 100% 50%;     /* #00ff41 — primary accent          */
+  --success: 135 100% 40%;     /* #00cc33 — secondary green (body)  */
+
+  /* raw hex tokens for non-Tailwind usage */
+  --green-bright:      #00ff41;
+  --green-mid:         #00cc33;
+  --green-dim:         #003d0f;
+  --green-glow:        rgba(0, 255, 65, 0.15);
+  --green-glow-strong: rgba(0, 255, 65, 0.35);
 }
 
-.dark {
-  --bg: 224 44% 6%;
-  --fg: 210 40% 95%;
-  --muted: 217 15% 64%;
-  --border: 218 26% 20%;
-  --card: 224 33% 9%;
-  --accent: 187 96% 61%;
-  --success: 146 52% 52%;
+/* ─── Reset & Base ────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  border-radius: 0 !important;
+  cursor: none;
+}
+
+/* keep text selection readable */
+::selection {
+  background: var(--green-dim);
+  color: var(--green-bright);
 }
 
 html {
   scroll-behavior: smooth;
+  /* CRT flicker — subtle, every 8 s */
+  animation: crt-flicker 8s infinite;
 }
 
 body {
-  @apply bg-bg text-fg antialiased;
-  background-image:
-    radial-gradient(1000px 300px at 20% -10%, hsl(var(--accent) / 0.12), transparent 60%),
-    radial-gradient(900px 260px at 80% -10%, hsl(210 90% 60% / 0.1), transparent 60%);
+  @apply bg-bg font-mono text-success antialiased;
+  background-color: #000;
+  overflow-x: hidden;
 }
 
-* {
-  @apply border-border;
+/* ─── Scanline overlay (fixed, full-viewport) ─────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+  pointer-events: none;
+  z-index: 9998;
 }
 
-::selection {
-  @apply bg-accent/25 text-fg;
+/* ─── CRT flicker ─────────────────────────────────────────────────────────── */
+@keyframes crt-flicker {
+  0%, 94%, 100% { opacity: 1; }
+  95%           { opacity: 0.97; }
+  96%           { opacity: 0.99; }
+  97%           { opacity: 0.95; }
+  98%           { opacity: 0.98; }
 }
 
+/* ─── Cursor blink ────────────────────────────────────────────────────────── */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.cursor-blink::after {
+  content: '█';
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+  color: var(--green-bright);
+}
+
+/* ─── Glow text ──────────────────────────────────────────────────────────── */
+.glow {
+  text-shadow:
+    0 0 8px  var(--green-bright),
+    0 0 20px var(--green-bright),
+    0 0 40px rgba(0, 255, 65, 0.5);
+}
+
+.glow-sm {
+  text-shadow: 0 0 6px var(--green-bright);
+}
+
+/* ─── Terminal prompt prefix ─────────────────────────────────────────────── */
+.term-prompt::before {
+  content: '> ';
+  color: var(--green-mid);
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar              { width: 6px; background: #000; }
+::-webkit-scrollbar-thumb        { background: var(--green-dim); }
+::-webkit-scrollbar-thumb:hover  { background: var(--green-bright); }
+
+/* ─── Focus ring (replaces the Tailwind utility) ─────────────────────────── */
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#00ff41] focus-visible:ring-offset-1 focus-visible:ring-offset-black;
+}
+
+/* ─── Terminal panel (shared card style) ─────────────────────────────────── */
+.term-panel {
+  border: 1px solid var(--green-dim);
+  background: hsl(var(--card));
+}
+
+.term-panel:hover {
+  border-color: var(--green-bright);
+  box-shadow: 0 0 18px var(--green-glow), 0 0 4px var(--green-glow-strong);
+}
+
+/* ─── Prose overrides ────────────────────────────────────────────────────── */
 .prose {
-  @apply prose-slate dark:prose-invert max-w-none;
+  @apply max-w-none;
+  color: var(--green-mid);
 }
 
-.prose pre {
-  @apply overflow-x-auto rounded-xl border border-border bg-slate-950 p-4 text-sm;
+.prose h1, .prose h2, .prose h3, .prose h4, .prose h5 {
+  color: var(--green-bright);
+  font-family: 'JetBrains Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.prose a {
+  color: var(--green-bright);
+  text-decoration: underline;
+}
+
+.prose strong {
+  color: var(--green-bright);
 }
 
 .prose code {
-  @apply rounded bg-black/5 px-1.5 py-0.5 font-mono text-sm dark:bg-white/10;
+  background: rgba(0, 255, 65, 0.07);
+  color: var(--green-bright);
+  padding: 1px 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.875em;
+}
+
+.prose pre {
+  background: #000;
+  border: 1px solid var(--green-dim);
+  overflow-x: auto;
+  padding: 1rem;
 }
 
 .prose pre code {
-  @apply bg-transparent p-0;
+  background: transparent;
+  padding: 0;
+  color: var(--green-mid);
 }
 
-.focus-ring {
-  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
+.prose blockquote {
+  border-left: 2px solid var(--green-dim);
+  color: var(--green-mid);
 }
 
-.grid-noise::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.05;
-  background-image: radial-gradient(circle, #fff 0.5px, transparent 0.5px);
-  background-size: 3px 3px;
+.prose hr {
+  border-color: var(--green-dim);
 }
 
-.card-panel {
-  @apply rounded-2xl border border-border bg-card/70;
+.prose ul li::marker, .prose ol li::marker {
+  color: var(--green-bright);
 }
 
+/* ─── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
+  html { animation: none; }
   * {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

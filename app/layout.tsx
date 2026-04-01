@@ -1,21 +1,23 @@
 import type { Metadata } from 'next';
-import { JetBrains_Mono, Manrope, Space_Grotesk } from 'next/font/google';
+import { JetBrains_Mono } from 'next/font/google';
 import type { ReactNode } from 'react';
 
 import { Analytics } from '@/components/layout/analytics';
 import { Footer } from '@/components/layout/footer';
 import { Navbar } from '@/components/layout/navbar';
 import { ScrollProgress } from '@/components/layout/scroll-progress';
-import { SignatureGrid } from '@/components/layout/signature-grid';
-import { ThemeProvider } from '@/components/providers/theme-provider';
+import { TerminalCursor } from '@/components/ui/terminal-cursor';
 import { getPosts, getProjects } from '@/lib/content';
 import { baseMetadata } from '@/lib/metadata';
 
 import '@/styles/globals.css';
 
-const sans = Manrope({ subsets: ['latin'], variable: '--font-sans', display: 'swap' });
-const display = Space_Grotesk({ subsets: ['latin'], variable: '--font-display', display: 'swap' });
-const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-mono', display: 'swap' });
+const mono = JetBrains_Mono({
+  subsets: ['latin'],
+  variable: '--font-mono',
+  display: 'swap',
+  weight: ['300', '400', '500', '600', '700']
+});
 
 export const metadata: Metadata = baseMetadata;
 
@@ -40,21 +42,22 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${sans.variable} ${display.variable} ${mono.variable} min-h-screen font-sans`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
-          <a href="#main" className="focus-ring sr-only fixed left-4 top-4 z-[100] rounded bg-bg px-4 py-2 focus:not-sr-only">
-            Skip to content
-          </a>
-          <ScrollProgress />
-          <SignatureGrid />
-          <Navbar commandItems={commandItems} />
-          <main id="main" className="container py-10">
-            {children}
-          </main>
-          <Footer />
-          <Analytics />
-        </ThemeProvider>
+    <html lang="en" className="dark">
+      <body className={`${mono.variable} min-h-screen bg-black font-mono text-[#00cc33]`}>
+        <a
+          href="#main"
+          className="sr-only fixed left-4 top-4 z-[100] bg-black px-4 py-2 text-[#00ff41] focus:not-sr-only focus:outline focus:outline-[#00ff41]"
+        >
+          Skip to content
+        </a>
+        <ScrollProgress />
+        <TerminalCursor />
+        <Navbar commandItems={commandItems} />
+        <main id="main" className="container py-10">
+          {children}
+        </main>
+        <Footer />
+        <Analytics />
       </body>
     </html>
   );

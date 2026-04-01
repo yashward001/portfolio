@@ -1,70 +1,85 @@
 import Link from 'next/link';
-import { ArrowUpRight, Github, Sparkles } from 'lucide-react';
 
 import type { Project } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 
-import { Badge } from '../ui/badge';
-import { Card } from '../ui/card';
-
 export const ProjectCard = ({ project }: { project: Project }) => {
   return (
-    <Card className="group h-full p-5 transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_-24px_hsl(var(--accent)/0.8)]">
-      <div className="flex h-full flex-col gap-4">
-        <div className="flex items-start justify-between gap-3">
-          <span className="inline-flex items-center gap-1 rounded-full border border-border bg-bg px-2.5 py-1 text-[11px] uppercase tracking-[0.16em] text-muted">
-            <Sparkles className="h-3 w-3 text-accent" />
-            {project.role}
-          </span>
-          <p className="text-xs text-muted">{formatDate(project.date)}</p>
+    <article className="group flex h-full flex-col border border-[#003d0f] bg-[#0a0f0a] transition-all duration-200 hover:border-[#00ff41] hover:shadow-[0_0_20px_rgba(0,255,65,0.12)]">
+      {/* Terminal title bar */}
+      <div className="flex items-center justify-between border-b border-[#003d0f] px-3 py-2 group-hover:border-[#00ff41]/40">
+        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#006622]">
+          ── [PROJECT] ──────────────────────
+        </span>
+        <span className="font-mono text-[10px] text-[#003d0f]">{formatDate(project.date)}</span>
+      </div>
+
+      <div className="flex flex-1 flex-col gap-3 p-4">
+        {/* Role badge */}
+        <span className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">
+          ROLE: {project.role}
+        </span>
+
+        {/* Title */}
+        <h3 className="font-mono text-base font-bold uppercase tracking-wide text-[#00ff41] leading-tight">
+          &gt; {project.title}
+        </h3>
+
+        {/* Summary */}
+        <p className="font-mono text-xs text-[#00cc33] leading-relaxed">{project.summary}</p>
+
+        {/* Impact metric */}
+        <div className="border border-[#003d0f] bg-black/50 px-3 py-2">
+          <span className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">IMPACT: </span>
+          <span className="font-mono text-xs text-[#00cc33]">{project.impactMetric}</span>
         </div>
 
-        <div className="space-y-2">
-          <h3 className="font-display text-xl leading-tight">{project.title}</h3>
-          <p className="text-sm text-muted">{project.summary}</p>
-        </div>
+        {/* Stack */}
+        <p className="font-mono text-[10px] text-[#006622]">
+          <span className="text-[#004d1a]">STACK: </span>
+          {project.stack.slice(0, 5).join(' · ')}
+        </p>
 
-        <div className="rounded-xl border border-accent/30 bg-accent/10 px-3 py-2 text-sm font-medium text-accent">
-          {project.impactMetric}
-        </div>
-
-        <div className="flex flex-wrap gap-2">
+        {/* Tags */}
+        <div className="flex flex-wrap gap-1.5">
           {project.tags.slice(0, 4).map((tag) => (
-            <Badge key={tag}>{tag}</Badge>
+            <span
+              key={tag}
+              className="border border-[#003d0f] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[#006622]"
+            >
+              [{tag}]
+            </span>
           ))}
-          {project.tags.length > 4 ? <Badge>+{project.tags.length - 4} more</Badge> : null}
+          {project.tags.length > 4 && (
+            <span className="border border-[#003d0f] px-1.5 py-0.5 font-mono text-[10px] text-[#004d1a]">
+              +{project.tags.length - 4}
+            </span>
+          )}
         </div>
 
-        <div className="mt-auto flex items-center justify-between">
-          <Link href={`/projects/${project.slug}`} className="focus-ring inline-flex items-center gap-1 text-sm text-accent">
-            Open Case Study <ArrowUpRight className="h-4 w-4" />
+        {/* Footer links */}
+        <div className="mt-auto flex items-center justify-between pt-2">
+          <Link
+            href={`/projects/${project.slug}`}
+            className="focus-ring font-mono text-xs text-[#00cc33] transition-colors hover:text-[#00ff41] hover:[text-shadow:0_0_6px_#00ff41]"
+          >
+            [OPEN CASE STUDY ▶]
           </Link>
           <div className="flex items-center gap-2">
-            {project.links.repo ? (
+            {project.links.repo && (
               <a
                 href={project.links.repo}
-                className="focus-ring rounded p-1.5 text-muted hover:text-fg"
+                className="focus-ring font-mono text-[10px] text-[#006622] transition-colors hover:text-[#00ff41]"
                 aria-label="GitHub repository"
                 target="_blank"
                 rel="noreferrer"
               >
-                <Github className="h-4 w-4" />
+                [GH]
               </a>
-            ) : null}
-            {project.links.live || project.links.demo ? (
-              <a
-                href={project.links.live ?? project.links.demo ?? '#'}
-                className="focus-ring rounded p-1.5 text-muted hover:text-fg"
-                aria-label="Live project link"
-                target="_blank"
-                rel="noreferrer"
-              >
-                <ArrowUpRight className="h-4 w-4" />
-              </a>
-            ) : null}
+            )}
           </div>
         </div>
       </div>
-    </Card>
+    </article>
   );
 };

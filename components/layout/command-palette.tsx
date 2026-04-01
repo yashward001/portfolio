@@ -94,13 +94,13 @@ export const CommandPalette = ({ items }: { items: CommandItem[] }) => {
     <>
       <button
         type="button"
-        className="focus-ring inline-flex items-center gap-2 rounded-xl border border-border bg-card/85 px-3 py-2 text-xs text-muted hover:text-fg"
+        className="focus-ring inline-flex items-center gap-2 border border-[#003d0f] bg-black px-3 py-2 font-mono text-[10px] text-[#006622] transition-colors hover:border-[#00ff41] hover:text-[#00ff41]"
         onClick={() => setOpen(true)}
         aria-label="Open command palette"
       >
-        <Command className="h-3.5 w-3.5" />
-        <span className="hidden md:inline">Command</span>
-        <kbd className="rounded bg-bg px-1.5 py-0.5 font-mono text-[10px]">⌘K</kbd>
+        <Command className="h-3 w-3" />
+        <span className="hidden md:inline tracking-widest uppercase">CMD</span>
+        <kbd className="border border-[#003d0f] px-1.5 py-0.5 font-mono text-[9px]">⌘K</kbd>
       </button>
 
       <AnimatePresence>
@@ -113,22 +113,22 @@ export const CommandPalette = ({ items }: { items: CommandItem[] }) => {
             onClick={() => setOpen(false)}
           >
             <motion.div
-              className="w-full max-w-2xl overflow-hidden rounded-2xl border border-border bg-card/95 shadow-2xl"
+              className="w-full max-w-2xl overflow-hidden border border-[#003d0f] bg-black shadow-[0_0_40px_rgba(0,255,65,0.1)]"
               initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, y: -10, scale: 0.98 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -10, scale: 0.98 }}
               transition={{ duration: 0.18 }}
               onClick={(event) => event.stopPropagation()}
             >
-              <div className="flex items-center gap-2 border-b border-border px-4 py-3">
-                <Search className="h-4 w-4 text-muted" />
+              <div className="flex items-center gap-2 border-b border-[#003d0f] px-4 py-3">
+                <span className="font-mono text-xs text-[#006622]">&gt;</span>
                 <input
                   autoFocus
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   onKeyDown={onListKeyDown}
-                  placeholder="Search projects, posts, and pages"
-                  className="w-full bg-transparent text-sm outline-none placeholder:text-muted"
+                  placeholder="search projects, posts, pages..."
+                  className="w-full bg-transparent font-mono text-xs text-[#00cc33] outline-none placeholder:text-[#003d0f]"
                 />
               </div>
 
@@ -142,8 +142,8 @@ export const CommandPalette = ({ items }: { items: CommandItem[] }) => {
                       <li key={`${item.type}-${item.href}`}>
                         <button
                           type="button"
-                          className={`focus-ring flex w-full items-center justify-between rounded-xl px-3 py-2 text-left ${
-                            active ? 'bg-accent/15 text-fg' : 'text-muted hover:bg-bg hover:text-fg'
+                          className={`focus-ring flex w-full items-center justify-between px-3 py-2 text-left font-mono text-xs transition-colors ${
+                            active ? 'bg-[#003d0f] text-[#00ff41]' : 'text-[#006622] hover:bg-[#0a0f0a] hover:text-[#00cc33]'
                           }`}
                           role="option"
                           aria-selected={active}
@@ -160,7 +160,7 @@ export const CommandPalette = ({ items }: { items: CommandItem[] }) => {
                     );
                   })
                 ) : (
-                  <li className="px-3 py-8 text-center text-sm text-muted">No matching results.</li>
+                  <li className="px-3 py-8 text-center font-mono text-xs text-[#004d1a]">&gt; no matching results_</li>
                 )}
               </ul>
             </motion.div>
