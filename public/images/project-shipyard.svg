@@ -1,0 +1,7 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#1F1831"/>
+  <rect x="80" y="90" width="1040" height="450" rx="24" fill="#2B2142" stroke="#4A3C6B"/>
+  <text x="130" y="220" fill="#EDE9FE" font-size="52" font-family="monospace">Shipyard Analytics</text>
+  <text x="130" y="285" fill="#C4B5FD" font-size="28" font-family="monospace">Full-stack product analytics</text>
+  <text x="130" y="360" fill="#DDD6FE" font-size="22" font-family="monospace">79% faster dashboards  |  2.1k MAU</text>
+</svg>

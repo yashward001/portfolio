@@ -1,0 +1,51 @@
+---
+title: "Quantitative Research Data Pipeline"
+slug: "quant-research-data-pipeline"
+summary: "Built a reproducible data pipeline for ingesting and processing large financial time-series to accelerate quant experimentation."
+role: "Data + Quant Infrastructure Engineer"
+date: "2025-03-21"
+tags:
+  - Data Pipeline
+  - Quant Infrastructure
+  - Reproducibility
+stack:
+  - Python
+  - PostgreSQL
+  - Airflow
+  - Docker
+impactMetric: "Reproducible ingestion and processing pipeline for large financial time-series datasets"
+featured: false
+cover: "/images/project-shipyard.svg"
+links:
+  repo: "https://github.com/yashward001"
+sortImpact: 81
+---
+
+## Problem
+
+Quant research workflows break when datasets are inconsistent, transformations are ad hoc, and experiments are not reproducible.
+
+## Constraints
+
+- High-volume time-series ingestion
+- Consistent feature derivations across studies
+- Need deterministic reruns for comparison integrity
+
+## Approach
+
+Developed a standardized ingestion-clean-transform pipeline with versioned datasets and reproducible experiment inputs.
+
+## Architecture
+
+- Scheduled ingestion jobs and validation checks
+- Canonical transformation layer for shared derived features
+- Experiment interface for reproducible model/evaluation runs
+
+## Results
+
+- Reproducible ingestion and processing pipeline for large financial time-series datasets.
+- Improved confidence in cross-experiment comparability.
+
+## What I'd Do Next
+
+Add dataset lineage tracking and cost-aware compute scheduling.

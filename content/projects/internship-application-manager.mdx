@@ -1,0 +1,52 @@
+---
+title: "Internship Application Manager (Privacy-First AI Product)"
+slug: "internship-application-manager"
+summary: "Built a privacy-first job-tracking system with a Manifest V3 extension and on-device inference for structured internship tracking."
+role: "Product + AI Engineer"
+date: "2025-07-30"
+tags:
+  - Privacy
+  - Chrome Extension
+  - AI Product
+stack:
+  - Chrome Extension (Manifest V3)
+  - Next.js
+  - Supabase
+  - PostgreSQL
+impactMetric: "Privacy-first on-device inference with zero cloud data exposure"
+featured: false
+cover: "/images/project-streammesh.svg"
+links:
+  repo: "https://github.com/yashward001"
+  live: "https://yash-portfolio-six-cyan.vercel.app"
+sortImpact: 88
+---
+
+## Problem
+
+Students apply across multiple ATS platforms and lose track of deadlines, statuses, and follow-ups.
+
+## Constraints
+
+- Strict privacy requirement: no raw page/job content exfiltration
+- Need broad compatibility across LinkedIn, Greenhouse, Lever, Workday
+- Low-friction capture from active browsing sessions
+
+## Approach
+
+Created a browser-assisted workflow that extracts structured job metadata, performs local enrichment using WebGPU/WASM fallback, and syncs only normalized records.
+
+## Architecture
+
+- Manifest V3 extension captures structured fields from supported pages
+- Next.js dashboard for timeline, status board, and reminders
+- Supabase/PostgreSQL backend for user-safe structured records
+
+## Results
+
+- Privacy-first on-device inference with zero cloud data exposure.
+- Improved application pipeline visibility with auto-captured metadata.
+
+## What I'd Do Next
+
+Add calendar-aware deadline prioritization and adaptive reminder intelligence.

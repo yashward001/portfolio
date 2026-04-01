@@ -1,0 +1,7 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#0B1324"/>
+  <rect x="80" y="90" width="1040" height="450" rx="24" fill="#111B34" stroke="#2B3A5A"/>
+  <text x="130" y="220" fill="#E2E8F0" font-size="52" font-family="monospace">StreamMesh</text>
+  <text x="130" y="285" fill="#7DD3FC" font-size="28" font-family="monospace">Low-latency event platform</text>
+  <text x="130" y="360" fill="#94A3B8" font-size="22" font-family="monospace">41% lower P99 latency  |  58k events/sec</text>
+</svg>

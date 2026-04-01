@@ -1,0 +1,66 @@
+---
+title: "Loop.AI: AI Email Dashboard"
+slug: "loop-ai-email-dashboard"
+summary: "Built a privacy-aware AI dashboard that summarizes and categorizes academic emails, reducing inbox overload for student users."
+role: "Full-Stack + AI Engineer"
+date: "2025-11-15"
+tags:
+  - Full Stack
+  - LLM Applications
+  - Productivity
+stack:
+  - React
+  - FastAPI
+  - PostgreSQL
+  - OpenAI API
+  - Gmail API
+impactMetric: "Up to 70% lower inbox overload for active users"
+featured: true
+cover: "/images/project-streammesh.svg"
+links:
+  repo: "https://github.com/yashward001"
+  live: "https://yash-portfolio-six-cyan.vercel.app"
+sortImpact: 93
+---
+
+## Problem
+
+Students receive high volumes of fragmented academic communication across classes, clubs, and internships. Important items get buried, and manual triage wastes time every day.
+
+## Constraints
+
+- Gmail API quotas and OAuth consent constraints
+- Need for low-latency summarization at interaction time
+- User trust requirements around handling personal email data
+- Cross-device usability with mobile-first interaction patterns
+
+## Approach
+
+I designed Loop.AI as a full-stack pipeline that ingests Gmail threads, classifies intent, and generates concise summaries with actionable labels (urgent, deadlines, admin, opportunities).
+
+<ArchitectureDiagram title="Loop.AI Request Flow" variant="product" />
+
+## Architecture
+
+- **Frontend (React):** dashboard views for grouped email categories and priority queues.
+- **Backend (FastAPI):** OAuth callbacks, message sync jobs, and summarization endpoints.
+- **Storage (PostgreSQL):** normalized thread metadata + summary cache for fast rendering.
+- **Inference layer:** prompt pipeline for concise summary + category extraction.
+
+## Key Technical Choices
+
+1. **Hybrid classification (rules + LLM):** deterministic labels for common patterns, LLM fallback for ambiguous messages.
+2. **Summary caching in PostgreSQL:** reduced repeated inference cost and improved perceived speed.
+3. **Scoped OAuth permissions:** limited access footprint and improved user trust.
+
+Tradeoff: hybrid classification adds maintenance complexity, but gives better reliability and cost control than pure LLM classification.
+
+## Results
+
+- Reduced inbox overload by up to **70%** for regular student users.
+- Improved message triage speed through category-first dashboard workflows.
+- Built stable auth and sync flows for repeated daily usage.
+
+## What I'd Do Next
+
+I would add personalization via user-specific relevance signals and implement selective on-device summarization for higher privacy guarantees.

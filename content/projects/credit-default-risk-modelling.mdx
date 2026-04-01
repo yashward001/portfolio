@@ -1,0 +1,50 @@
+---
+title: "Credit Default Risk Modelling (Large-Scale Tabular Data)"
+slug: "credit-default-risk-modelling"
+summary: "Built a gradient-boosted risk model with temporal aggregation features and class-imbalance handling for default prediction."
+role: "ML Engineer"
+date: "2025-05-28"
+tags:
+  - Machine Learning
+  - Tabular Data
+  - Risk Modelling
+stack:
+  - Python
+  - LightGBM
+  - scikit-learn
+  - Pandas
+impactMetric: "Gradient-boosted ensemble with temporal feature aggregation and class-imbalance handling"
+featured: false
+cover: "/images/project-retention.svg"
+links:
+  repo: "https://github.com/yashward001"
+sortImpact: 87
+---
+
+## Problem
+
+Default prediction requires high recall on risky segments while preserving precision for operational decisioning.
+
+## Constraints
+
+- Strong class imbalance and temporal leakage risks
+- Need for interpretable feature influence for risk teams
+
+## Approach
+
+Designed temporal aggregation features, trained gradient boosting models, and calibrated ranking thresholds for practical decision workflows.
+
+## Architecture
+
+- Feature engineering pipeline with leak-safe temporal windows
+- LightGBM training + calibration and ranking metrics evaluation
+- Importance analysis for model explainability
+
+## Results
+
+- Gradient-boosted ensemble with temporal feature aggregation and class-imbalance handling.
+- Improved ranking quality for high-risk candidate prioritization.
+
+## What I'd Do Next
+
+Integrate drift monitoring and periodic recalibration for production robustness.

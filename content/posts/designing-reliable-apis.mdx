@@ -1,0 +1,23 @@
+---
+title: "Designing Reliable APIs Under Burst Traffic"
+slug: "designing-reliable-apis"
+excerpt: "A practical breakdown of rate shaping, idempotency, and observability patterns for robust APIs."
+publishedAt: "2025-10-02"
+tags:
+  - API Design
+  - Reliability
+  - Distributed Systems
+draft: false
+---
+
+Production reliability usually fails at interfaces, not core logic.
+
+```ts
+export const idempotencyKey = (tenantId: string, eventId: string) => `${tenantId}:${eventId}`;
+```
+
+Three patterns consistently help:
+
+1. Admission control before expensive work.
+2. Idempotent writes with bounded memory windows.
+3. Latency-focused dashboards with tail metrics, not averages.

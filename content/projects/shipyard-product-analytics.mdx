@@ -1,0 +1,66 @@
+---
+title: "StraddleAI: AI-Powered Options Strategy Engine"
+slug: "straddle-ai-options-strategy"
+summary: "Engineered an AI-assisted long straddle strategy system combining reinforcement learning, transformers, and real-time market + sentiment signals."
+role: "Quant + ML Engineer"
+date: "2025-09-10"
+tags:
+  - Quant Finance
+  - Reinforcement Learning
+  - Time Series
+stack:
+  - Python
+  - PyTorch
+  - Transformers
+  - RL (DQN)
+  - Real-time Data Pipelines
+impactMetric: "Automated strategy evaluation with risk-aware decision support for volatile market regimes"
+featured: false
+cover: "/images/project-shipyard.svg"
+links:
+  repo: "https://github.com/yashward001"
+  demo: "https://yash-portfolio-six-cyan.vercel.app"
+sortImpact: 89
+---
+
+## Problem
+
+Manual options strategy execution is difficult under high volatility because signal quality shifts quickly and traders must balance opportunity with strict downside controls.
+
+## Constraints
+
+- Non-stationary financial time-series behavior
+- Limited tolerance for unstable policy behavior
+- Need to combine price signals with external sentiment context
+- Real-time ingestion requirements for actionable updates
+
+## Approach
+
+I built a research-to-deployment pipeline centered on long straddle setups. A DQN-based policy layer and transformer-driven sequence features were combined with sentiment inputs to evaluate potential entries and exits under risk constraints.
+
+<ArchitectureDiagram title="StraddleAI Research Pipeline" variant="pipeline" />
+
+## Architecture
+
+- **Data layer:** streaming market and sentiment ingestion with aligned timestamps.
+- **Feature layer:** rolling-window feature extraction + sequence embeddings.
+- **Policy layer:** DQN agent trained for risk-adjusted action selection.
+- **Evaluation layer:** out-of-sample backtests and scenario stress checks.
+
+## Key Technical Choices
+
+1. **DQN for sequential decision policy:** suitable for action-value optimization under evolving states.
+2. **Transformer feature encoder:** stronger temporal representation than hand-crafted indicators alone.
+3. **Risk constraints in decision loop:** bounded exposures and controlled strategy behavior.
+
+Tradeoff: model complexity increased experimentation cost, but improved flexibility across different volatility regimes.
+
+## Results
+
+- Automated strategy research and evaluation workflows end-to-end.
+- Improved consistency of decision support under volatile conditions.
+- Established reusable pipeline foundations for future options strategy variants.
+
+## What I'd Do Next
+
+I would implement walk-forward retraining with regime-aware policy switching and integrate broker simulation APIs for tighter production realism.

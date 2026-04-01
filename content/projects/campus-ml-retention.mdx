@@ -1,0 +1,66 @@
+---
+title: "SWEE-AI: Software Development Assistant"
+slug: "swee-ai-software-assistant"
+summary: "Created a multi-agent AI development assistant with RAG over codebases to support code generation, refactoring, and review workflows."
+role: "AI Systems Engineer"
+date: "2025-10-01"
+tags:
+  - AI Systems
+  - Multi-Agent
+  - RAG
+stack:
+  - FastAPI
+  - Next.js
+  - FAISS
+  - Python
+  - TypeScript
+impactMetric: "Faster developer iteration via task-specific AI agents and retrieval-grounded outputs"
+featured: false
+cover: "/images/project-retention.svg"
+links:
+  repo: "https://github.com/yashward001"
+  demo: "https://yash-portfolio-six-cyan.vercel.app"
+sortImpact: 91
+---
+
+## Problem
+
+General-purpose coding copilots often miss project context, produce hallucinated code, and struggle with multi-step engineering tasks like refactors plus test updates.
+
+## Constraints
+
+- Need to ground responses in repository-specific context
+- Keep latency acceptable for interactive coding workflows
+- Support multiple task types without one monolithic prompt
+- Preserve clear, inspectable decision traces for users
+
+## Approach
+
+I built a multi-agent architecture where each agent specializes in one workflow (generation, refactor, review). A retrieval layer indexes project docs and code chunks into FAISS, then routes context to the right agent before response generation.
+
+<ArchitectureDiagram title="SWEE-AI Agent and Retrieval Pipeline" variant="ml" />
+
+## Architecture
+
+- **Frontend (Next.js):** real-time task interface and streamed responses.
+- **API layer (FastAPI):** orchestration, agent routing, and tool-call execution.
+- **Retrieval layer (FAISS):** embedding index over code + docs for context grounding.
+- **Agent system:** role-specific prompts and output validation for predictable behavior.
+
+## Key Technical Choices
+
+1. **Task-specific agents vs single assistant:** improved response consistency on specialized tasks.
+2. **RAG over full context stuffing:** reduced hallucinations and token cost.
+3. **Response validation hooks:** enforced output format and quality checks before returning answers.
+
+Tradeoff: orchestration complexity increased, but quality and reliability improved substantially for real engineering workflows.
+
+## Results
+
+- Improved development iteration speed by reducing context switching.
+- Produced more grounded outputs using retrieval-backed context.
+- Enabled extensible architecture for adding future agents/tools.
+
+## What I'd Do Next
+
+I would add repository-specific eval benchmarks and automated regression tests for agent output quality across representative engineering tasks.

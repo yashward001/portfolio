@@ -1,0 +1,79 @@
+---
+title: "NanoExchange"
+slug: "nanoexchange-trading-platform"
+summary: "Deterministic C++20 limit order book and matching engine with binary event logging, replay verification, and state hashing."
+role: "Systems Engineer"
+date: "2026-01-12"
+tags:
+  - Systems
+  - C++
+  - Trading Engine
+  - Determinism
+stack:
+  - C++20
+  - CMake
+  - Ninja
+  - CTest
+  - clang-format
+impactMetric: "Deterministic replay integrity: same command stream -> same events -> same final state hash"
+featured: true
+cover: "/images/project-streammesh.svg"
+links:
+  repo: "https://github.com/yashward001/nanoExchange"
+sortImpact: 92
+---
+
+## Problem
+
+Most matching engine demos optimize for raw throughput but skip determinism, replayability, and auditability. That makes debugging and correctness validation difficult under real command streams.
+
+## Constraints
+
+- Deterministic execution across repeated runs
+- Explicit domain models for commands, events, and book state
+- Replayable binary logs with integrity checks
+- Strong confidence via focused unit coverage of core behavior
+
+## Approach
+
+I built a deterministic engine path where the same command stream always yields the same event stream and final state hash. The architecture follows clean domain boundaries and event-sourced replay.
+
+<ArchitectureDiagram title="NanoExchange Engine + Replay Flow" variant="pipeline" />
+
+## Architecture
+
+- **Core domain (`src/core`)**
+  - `command.h`: fixed-width command model (`New`, `Cancel`, `Modify`)
+  - `event.h`: fixed-width event model (`Ack`, `Reject`, `Fill`, `Cancelled`, `Modified`)
+  - `order_book.*`: price levels + FIFO queues + order ID index
+  - `matching_engine.*`: command handling, matching logic, event emission
+  - `state_hash.*`: deterministic 64-bit state hash
+  - `types.h`: aliases (`OrderId`, `Price`, `Qty`, `Side`)
+- **I/O (`src/io`)**
+  - `binary_log.*`: binary writer/reader with `NXLG` header and `NXTL` trailer
+- **Tools (`tools`)**
+  - `record_demo.cpp`: reproducible command stream generator + logger
+  - `replay.cpp`: replay + final hash verification
+- **Tests (`tests/unit`)**
+  - wire types, order book, matching fills, engine events, hashing, log roundtrip
+
+## Key Technical Choices
+
+1. **Price-time priority with explicit buy/sell semantics** to keep matching behavior predictable.
+2. **Fixed-width, trivially copyable command/event types** for fast logging and deterministic binary roundtrips.
+3. **Integer ticks/lots (`int64_t`)** to avoid floating-point drift.
+4. **Deterministic snapshot ordering for state hash**
+   - asks: low -> high (FIFO)
+   - bids: high -> low (FIFO)
+
+Tradeoff: stricter type/layout constraints reduce flexibility but significantly improve reproducibility and auditability.
+
+## Results
+
+- Deterministic replay guarantees on recorded streams (`hash OK` parity between record and replay).
+- Event-sourced binary logs suitable for audit and correctness verification.
+- Test-first confidence across wire format, matching behavior, hashing, and log integrity.
+
+## What I'd Do Next
+
+I would extend benchmark coverage (`nx_bench`, `nx_latency_bench`) into automated CI trend tracking and add multi-instrument simulation scenarios for broader stress validation.

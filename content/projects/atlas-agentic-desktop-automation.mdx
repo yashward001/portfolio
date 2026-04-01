@@ -1,0 +1,107 @@
+---
+title: "ATLAS — Agentic Desktop Automation System"
+slug: "atlas-agentic-desktop-automation"
+summary: "Architected a full agentic pipeline with a formal 11-state/9-event state machine, Firestore capability registry, Playwright execution engine, and real-time WebSocket observability."
+role: "Systems Architect"
+date: "2026-04-01"
+tags:
+  - Agentic AI
+  - State Machines
+  - Playwright
+  - Firestore
+  - Systems
+  - LLM Orchestration
+stack:
+  - Next.js
+  - TypeScript
+  - FastAPI
+  - Firestore
+  - Playwright
+  - Gemini API
+  - WebSockets
+  - Framer Motion
+impactMetric: "Full agentic pipeline with a formal 11-state/9-event state machine, Firestore capability registry, Playwright execution engine, and real-time WebSocket observability"
+featured: true
+cover: "/images/project-retention.svg"
+links:
+  repo: "https://github.com/yashward001"
+sortImpact: 98
+---
+
+## Problem
+
+Desktop automation tools either record brittle click sequences or expose raw scripting APIs that require deep technical knowledge. Neither approach supports natural-language intent, graceful failure recovery, or auditability of executed actions.
+
+## Constraints
+
+- User intent must be expressed in natural language (voice or text) and reliably mapped to typed UI actions
+- High-risk actions require explicit human approval before execution
+- Every step must be observable in real time — screenshot evidence, retry state, and live status
+- Capability definitions must be declarative and storable, not hard-coded into prompts
+
+## Approach
+
+Architected across three layers: a Next.js frontend with a formal state machine governing the full interaction lifecycle; a FastAPI backend with a Firestore capability registry storing typed UI actions; and a Playwright execution engine running LLM-generated plans step-by-step.
+
+<ArchitectureDiagram title="ATLAS Three-Layer Architecture" variant="pipeline" />
+
+## Architecture
+
+### Layer 1 — Frontend (Next.js + TypeScript)
+
+A formal **11-state / 9-event state machine** governs every interaction phase:
+
+- States: `idle`, `listening`, `transcribing`, `planning`, `awaiting_approval`, `executing`, `step_success`, `step_failed`, `retrying`, `completed`, `error`
+- Events: `START_VOICE`, `TRANSCRIPT_READY`, `PLAN_READY`, `USER_APPROVED`, `STEP_DONE`, `STEP_FAILED`, `RETRY`, `ABORT`, `RESET`
+- Framer Motion drives state-transition animations for immediate visual feedback
+
+### Layer 2 — Backend (FastAPI + Firestore)
+
+A **Firestore capability registry** stores every automatable UI action as a structured document with:
+
+- `action_type`, `selector`, `description`, `parameters`
+- `preconditions`, `postconditions`
+- `risk_level` (low / medium / high)
+- `confidence_score`, `auto_heal_history`
+
+User intent is sent to **Gemini** alongside the full capability registry formatted as LLM tools. Gemini returns a structured execution plan as a sequence of capability IDs with filled parameters — no free-form scripting.
+
+### Layer 3 — Execution (Playwright)
+
+The Playwright engine runs each plan step sequentially:
+
+- Resolves capability IDs against the Firestore registry
+- Executes typed actions (click, fill, navigate, assert) with retry logic
+- Captures per-step screenshots with bounding-box highlights
+- Flags high-risk steps and pauses for human approval before proceeding
+
+### Observability
+
+A **WebSocket bridge** streams live execution state to the frontend:
+
+- Per-step status updates (pending / running / success / failed / retrying)
+- Screenshot evidence with annotated bounding boxes
+- Retry indicators and approval gate prompts
+- Full execution transcript on completion
+
+### Voice-First Interaction
+
+**Gemini Live API** streams microphone audio directly for real-time transcription and intent extraction, bypassing a separate STT step and reducing end-to-end latency from voice to plan generation.
+
+## Key Technical Choices
+
+1. **Formal state machine over ad-hoc flags:** eliminates impossible state combinations and makes transition logic auditable and testable.
+2. **Firestore capability registry over prompt-embedded selectors:** decouples UI knowledge from inference — capabilities can be updated, versioned, and ablation-tested without redeploying.
+3. **Structured plan as capability IDs, not raw code:** Gemini cannot generate arbitrary Playwright scripts; it can only select and parameterize pre-approved actions, bounding the execution surface.
+4. **Human approval gate for high-risk actions:** risk levels are declared in the capability record, not inferred at runtime — predictable and auditable.
+
+## Results
+
+- Full agentic pipeline operational end-to-end: voice → plan → approval → execution → observability.
+- Formal state machine eliminates undefined transition states across 11 distinct interaction phases.
+- Firestore capability registry enables declarative action governance with per-capability risk, confidence, and auto-heal metadata.
+- Real-time WebSocket observability with per-step screenshots and bounding-box highlights.
+
+## What I'd Do Next
+
+Extend the capability registry with automated discovery (crawl a target UI and propose new capability records), add regression harnesses that replay recorded execution traces against UI updates, and implement policy-based approval routing for team environments.

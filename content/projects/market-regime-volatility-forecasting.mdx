@@ -1,0 +1,50 @@
+---
+title: "Market Regime Detection and Volatility Forecasting"
+slug: "market-regime-volatility-forecasting"
+summary: "Created a regime classification and volatility forecasting workflow using rolling-window feature extraction and out-of-sample testing."
+role: "Quant Research Engineer"
+date: "2025-04-30"
+tags:
+  - Time Series
+  - Quant Research
+  - Forecasting
+stack:
+  - Python
+  - scikit-learn
+  - NumPy
+  - Pandas
+impactMetric: "Rolling-window regime classification with out-of-sample validation"
+featured: false
+cover: "/images/project-streammesh.svg"
+links:
+  repo: "https://github.com/yashward001"
+sortImpact: 83
+---
+
+## Problem
+
+Trading strategies degrade when market behavior shifts across calm, trending, and high-volatility regimes.
+
+## Constraints
+
+- Non-stationary dynamics in financial series
+- Need robust out-of-sample validation
+
+## Approach
+
+Engineered rolling-window features and trained regime classifiers aligned to downstream volatility forecasting objectives.
+
+## Architecture
+
+- Data prep layer for aligned returns/volatility windows
+- Regime classification model with temporal validation
+- Forecast evaluation module for out-of-sample performance
+
+## Results
+
+- Rolling-window regime classification with out-of-sample validation.
+- Produced more stable downstream volatility forecasts across shift events.
+
+## What I'd Do Next
+
+Add hidden-state models and online adaptation for intraday regime transitions.

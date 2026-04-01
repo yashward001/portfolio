@@ -1,0 +1,7 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#10211A"/>
+  <rect x="80" y="90" width="1040" height="450" rx="24" fill="#163224" stroke="#2F5A47"/>
+  <text x="130" y="220" fill="#DCFCE7" font-size="52" font-family="monospace">Campus Retention Predictor</text>
+  <text x="130" y="285" fill="#86EFAC" font-size="28" font-family="monospace">Interpretable ML decision support</text>
+  <text x="130" y="360" fill="#A7F3D0" font-size="22" font-family="monospace">0.86 ROC-AUC  |  +29% precision</text>
+</svg>

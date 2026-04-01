@@ -1,0 +1,88 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 220 27% 97%;
+  --fg: 224 39% 11%;
+  --muted: 220 13% 42%;
+  --border: 220 23% 84%;
+  --card: 0 0% 100%;
+  --accent: 187 96% 61%;
+  --success: 146 62% 36%;
+}
+
+.dark {
+  --bg: 224 44% 6%;
+  --fg: 210 40% 95%;
+  --muted: 217 15% 64%;
+  --border: 218 26% 20%;
+  --card: 224 33% 9%;
+  --accent: 187 96% 61%;
+  --success: 146 52% 52%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-bg text-fg antialiased;
+  background-image:
+    radial-gradient(1000px 300px at 20% -10%, hsl(var(--accent) / 0.12), transparent 60%),
+    radial-gradient(900px 260px at 80% -10%, hsl(210 90% 60% / 0.1), transparent 60%);
+}
+
+* {
+  @apply border-border;
+}
+
+::selection {
+  @apply bg-accent/25 text-fg;
+}
+
+.prose {
+  @apply prose-slate dark:prose-invert max-w-none;
+}
+
+.prose pre {
+  @apply overflow-x-auto rounded-xl border border-border bg-slate-950 p-4 text-sm;
+}
+
+.prose code {
+  @apply rounded bg-black/5 px-1.5 py-0.5 font-mono text-sm dark:bg-white/10;
+}
+
+.prose pre code {
+  @apply bg-transparent p-0;
+}
+
+.focus-ring {
+  @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
+}
+
+.grid-noise::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: radial-gradient(circle, #fff 0.5px, transparent 0.5px);
+  background-size: 3px 3px;
+}
+
+.card-panel {
+  @apply rounded-2xl border border-border bg-card/70;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

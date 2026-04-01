@@ -1,0 +1,50 @@
+---
+title: "Stock Market Trend Predictor"
+slug: "stock-market-trend-predictor"
+summary: "Built an LSTM-based NASDAQ trend forecasting prototype with rolling evaluation and directional signal analysis."
+role: "ML Research Engineer"
+date: "2025-02-10"
+tags:
+  - Deep Learning
+  - Time Series
+  - Forecasting
+stack:
+  - Python
+  - PyTorch
+  - LSTM
+  - Pandas
+impactMetric: "LSTM-based directional signal analysis with rolling evaluation on held-out windows"
+featured: false
+cover: "/images/project-retention.svg"
+links:
+  repo: "https://github.com/yashward001"
+sortImpact: 78
+---
+
+## Problem
+
+Trend prediction in equity data is noisy and prone to overfitting, requiring disciplined validation to remain useful.
+
+## Constraints
+
+- Strong noise and low signal-to-noise ratio
+- Need rolling validation to avoid look-ahead bias
+
+## Approach
+
+Trained sequence models on NASDAQ historical windows, then evaluated directional movement predictions under strict out-of-sample setups.
+
+## Architecture
+
+- Feature preparation pipeline for lagged and normalized series
+- LSTM training loop with early-stopping and windowed validation
+- Evaluation module for directional accuracy and error diagnostics
+
+## Results
+
+- LSTM-based directional signal analysis with rolling evaluation on held-out windows.
+- Built reusable template for sequence-model market experiments.
+
+## What I'd Do Next
+
+Integrate transformer baselines and probabilistic forecasting intervals.

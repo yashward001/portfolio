@@ -1,0 +1,52 @@
+---
+title: "Enterprise Retrieval-Augmented Generation (RAG) Platform"
+slug: "enterprise-rag-platform"
+summary: "Designed a secure multi-user RAG platform with ingestion ETL, indexing pipelines, and response quality monitoring."
+role: "AI Platform Engineer"
+date: "2025-07-01"
+tags:
+  - RAG
+  - Data Engineering
+  - Platform
+stack:
+  - Python
+  - FastAPI
+  - FAISS
+  - PostgreSQL
+impactMetric: "Designed with multi-stage retrieval pipelines and an evaluation harness for measurable answer quality monitoring"
+featured: false
+cover: "/images/project-retention.svg"
+links:
+  repo: "https://github.com/yashward001"
+  demo: "https://yash-portfolio-six-cyan.vercel.app"
+sortImpact: 90
+---
+
+## Problem
+
+Enterprise teams need grounded answers from internal documents, but raw LLM calls often hallucinate and lack access control.
+
+## Constraints
+
+- Secure multi-user isolation
+- Continuous ingestion from evolving document sources
+- Need observability across retrieval and generation quality
+
+## Approach
+
+Implemented end-to-end ETL for ingestion, chunking, embedding, and indexing; layered retrieval evaluation and response monitoring for operational quality.
+
+## Architecture
+
+- ETL workers for source sync, chunking, and embedding generation
+- Retrieval service with scoped access controls
+- Evaluation dashboard for answer quality and latency tracking
+
+## Results
+
+- Multi-stage retrieval pipelines with an evaluation harness for measurable answer quality monitoring.
+- Reduced hallucinations by grounding responses in indexed internal context.
+
+## What I'd Do Next
+
+Add hybrid retrieval (sparse + dense) and automated prompt/version regression testing.
