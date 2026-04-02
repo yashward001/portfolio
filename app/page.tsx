@@ -10,7 +10,14 @@ import { SectionTitle } from '@/components/ui/section-title';
 import { profile } from '@/content/profile';
 import { getFeaturedProjects } from '@/lib/content';
 
-const HERO_WORDS = ['ATLAS', 'AI SYSTEMS', 'C++ 20', 'ENGINEER', 'FULL STACK'];
+const HERO_WORDS = [
+  'YASHWARDHAN',   // identity anchor
+  'AGENTIC AI',    // ATLAS — state machine + Playwright + Gemini
+  'LLM SYSTEMS',   // core expertise
+  'NANOEXCHANGE',  // C++20 deterministic matching engine
+  'PYTORCH',       // ML depth — STM, Gigin, quant work
+  'RAG PIPELINES', // enterprise RAG platform
+];
 
 export default function HomePage() {
   const featured = getFeaturedProjects();
