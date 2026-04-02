@@ -182,6 +182,76 @@ body::after {
   color: var(--green-bright);
 }
 
+/* ─── Spotlight / Glow card ──────────────────────────────────────────────── */
+[data-glow] {
+  --base:               135;
+  --spread:             40;
+  --outer:              1;
+  --border-size:        1px;
+  --spotlight-blur:     0px;
+  --backdrop:           #0a0f0a;
+  --radius:             0;
+  --backup-border:      #003d0f;
+  --bg-spot-opacity:    0.06;
+  --border-spot-opacity:0.85;
+  --border-light-opacity:0.07;
+
+  background-color: var(--backdrop);
+  border-radius: var(--radius) !important;
+  position: relative;
+}
+
+[data-glow]::before,
+[data-glow]::after {
+  pointer-events: none;
+  content: '';
+  position: absolute;
+  inset: calc(var(--border-size) * -1);
+  border-radius: var(--radius) !important;
+  background:
+    radial-gradient(
+      ellipse at
+        calc(((var(--x, 0) - var(--left, 0)) / var(--w, 1)) * 100%)
+        calc(((var(--y, 0) - var(--top, 0)) / var(--h, 1)) * 100%),
+      hsl(var(--base) 100% 50% / var(--bg-spot-opacity)) 0%,
+      transparent 100%
+    );
+}
+
+[data-glow]::before {
+  background-attachment: fixed;
+  background:
+    radial-gradient(
+      ellipse at var(--xp, 50%) var(--yp, 50%),
+      hsl(var(--base) 100% 50% / var(--bg-spot-opacity)) 0%,
+      transparent 60%
+    );
+  z-index: 0;
+}
+
+[data-glow]::after {
+  background:
+    radial-gradient(
+      ellipse at var(--xp, 50%) var(--yp, 50%),
+      hsl(calc(var(--base) + var(--spread)) 100% 60% / var(--border-spot-opacity)) 0%,
+      hsl(var(--base) 100% 50% / var(--border-light-opacity)) 33%,
+      transparent 66%
+    );
+  background-attachment: fixed;
+  border: var(--border-size) solid transparent;
+  mask-clip: padding-box, border-box;
+  mask-composite: intersect;
+  mask-image:
+    linear-gradient(transparent, transparent),
+    linear-gradient(white, white);
+  z-index: 1;
+}
+
+[data-glow] > * {
+  position: relative;
+  z-index: 2;
+}
+
 /* ─── Reduced motion ─────────────────────────────────────────────────────── */
 @media (prefers-reduced-motion: reduce) {
   html { animation: none; }

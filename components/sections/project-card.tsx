@@ -1,11 +1,12 @@
 import Link from 'next/link';
 
+import { SpotlightCard } from '@/components/ui/spotlight-card';
 import type { Project } from '@/lib/types';
 import { formatDate } from '@/lib/utils';
 
 export const ProjectCard = ({ project }: { project: Project }) => {
   return (
-    <article className="group flex h-full flex-col border border-[#003d0f] bg-[#0a0f0a] transition-all duration-200 hover:border-[#00ff41] hover:shadow-[0_0_20px_rgba(0,255,65,0.12)]">
+    <SpotlightCard as="article" className="group flex h-full flex-col border border-[#003d0f] transition-all duration-200 hover:border-[#00ff41] hover:shadow-[0_0_20px_rgba(0,255,65,0.12)]">
       {/* Terminal title bar */}
       <div className="flex items-center justify-between border-b border-[#003d0f] px-3 py-2 group-hover:border-[#00ff41]/40">
         <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#006622]">
@@ -80,6 +81,6 @@ export const ProjectCard = ({ project }: { project: Project }) => {
           </div>
         </div>
       </div>
-    </article>
+    </SpotlightCard>
   );
 };
