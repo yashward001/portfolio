@@ -42,6 +42,7 @@ export function TerminalProjectCard({
         <motion.div
           className="relative border border-[#003d0f] bg-[#0a0f0a] p-6 overflow-hidden"
           animate={{
+            height: hovered ? 220 : 160,
             borderColor: hovered ? "#00ff41" : "#003d0f",
             boxShadow: hovered
               ? "0 0 24px rgba(0,255,65,0.15), inset 0 0 24px rgba(0,255,65,0.03)"
@@ -81,7 +82,7 @@ export function TerminalProjectCard({
 
           {/* Title */}
           <motion.h3
-            className="font-mono text-base font-bold uppercase tracking-[0.08em] mb-4 leading-tight"
+            className="font-mono text-base font-bold uppercase tracking-[0.08em] mb-4 leading-tight line-clamp-2"
             animate={{
               color: hovered ? "#00ff41" : "#00cc33",
               textShadow: hovered ? "0 0 12px #00ff41" : "none",
