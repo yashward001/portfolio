@@ -7,8 +7,8 @@ import { SpotlightCard } from '@/components/ui/spotlight-card';
 const STATS = [
   { label: '//INTERNSHIPS', value: '04',        numeric: 4,   suffix: '',    sub: 'industry roles'  },
   { label: '//PROJECTS',    value: '10+',       numeric: 10,  suffix: '+',   sub: 'major builds'    },
-  { label: '//LEADERSHIP',  value: '04',        numeric: 4,   suffix: '',    sub: 'active roles'    },
-  { label: '//CGPA',        value: '4.00/5.00', numeric: 4,   suffix: '/5.00', sub: 'NTU scale'    },
+  { label: '//UPCOMING',    value: '01',        numeric: 1,   suffix: '',    sub: 'launches'        },
+  { label: '//CGPA',        value: '4',         numeric: 4,   suffix: '',    sub: 'NTU scale'       },
 ] as const;
 
 function useCountUp(target: number, duration = 1500) {
@@ -36,13 +36,11 @@ function useCountUp(target: number, duration = 1500) {
 }
 
 function StatPanel({
-  label, numeric, suffix, sub, isCgpa,
-}: { label: string; numeric: number; suffix: string; sub: string; isCgpa?: boolean }) {
+  label, numeric, suffix, sub,
+}: { label: string; numeric: number; suffix: string; sub: string }) {
   const count = useCountUp(numeric, 1500);
 
-  const display = isCgpa
-    ? `${count.toFixed(2)}/5.00`
-    : `${String(count).padStart(2, '0')}${suffix}`;
+  const display = `${String(count).padStart(2, '0')}${suffix}`;
 
   return (
     <SpotlightCard className="flex flex-col gap-4 border border-[#003d0f] p-6 transition-all duration-200 hover:border-[#00ff41] hover:shadow-[0_0_20px_rgba(0,255,65,0.15)]">
@@ -107,7 +105,6 @@ export const StatsRow = () => {
             numeric={s.numeric}
             suffix={s.suffix}
             sub={s.sub}
-            isCgpa={s.label === '//CGPA'}
           />
         ))}
       </div>
