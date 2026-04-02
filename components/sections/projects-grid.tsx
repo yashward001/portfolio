@@ -3,9 +3,8 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useMemo, useState } from 'react';
 
+import { TerminalProjectCard } from '@/components/ui/terminal-project-card';
 import type { Project } from '@/lib/types';
-
-import { ProjectCard } from './project-card';
 
 type SortBy = 'recency' | 'impact';
 
@@ -71,18 +70,24 @@ export const ProjectsGrid = ({ projects }: { projects: Project[] }) => {
         </div>
       </div>
 
-      <motion.div layout className="grid gap-4 lg:grid-cols-2">
+      <motion.div layout className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <AnimatePresence mode="popLayout">
-          {filtered.map((project) => (
+          {filtered.map((project, i) => (
             <motion.div
               key={project.slug}
               layout
-              initial={{ opacity: 0, y: 6 }}
-              animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -6 }}
               transition={{ duration: 0.18 }}
             >
-              <ProjectCard project={project} />
+              <TerminalProjectCard
+                title={project.title}
+                role={project.role}
+                date={new Date(project.date).getFullYear().toString()}
+                slug={project.slug}
+                tags={project.tags}
+                stack={project.stack}
+                index={i}
+              />
             </motion.div>
           ))}
         </AnimatePresence>

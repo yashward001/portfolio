@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
-import { ProjectCard } from '@/components/sections/project-card';
 import { SkillsSnapshot } from '@/components/sections/skills-snapshot';
 import { StatsRow } from '@/components/sections/stats-row';
 import { ParticleTextEffect } from '@/components/ui/particle-text-effect';
 import { Reveal } from '@/components/ui/reveal';
 import { SectionTitle } from '@/components/ui/section-title';
+import { TerminalProjectCard } from '@/components/ui/terminal-project-card';
 import { profile } from '@/content/profile';
 import { getFeaturedProjects } from '@/lib/content';
 
@@ -89,11 +89,18 @@ export default function HomePage() {
             description="Architecture-first engineering projects."
           />
         </Reveal>
-        <div className="grid gap-4 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {featured.map((project, index) => (
-            <Reveal key={project.slug} delay={index * 0.05}>
-              <ProjectCard project={project} />
-            </Reveal>
+            <TerminalProjectCard
+              key={project.slug}
+              title={project.title}
+              role={project.role}
+              date={new Date(project.date).getFullYear().toString()}
+              slug={project.slug}
+              tags={project.tags}
+              stack={project.stack}
+              index={index}
+            />
           ))}
         </div>
         <Reveal>
