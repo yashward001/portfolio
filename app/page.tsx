@@ -1,48 +1,68 @@
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 
-import { HeroGlow } from '@/components/sections/hero-glow';
 import { ProjectCard } from '@/components/sections/project-card';
 import { SkillsSnapshot } from '@/components/sections/skills-snapshot';
 import { StatsRow } from '@/components/sections/stats-row';
-import { KineticHeadline } from '@/components/ui/kinetic-headline';
+import { ParticleTextEffect } from '@/components/ui/particle-text-effect';
 import { Reveal } from '@/components/ui/reveal';
 import { SectionTitle } from '@/components/ui/section-title';
 import { profile } from '@/content/profile';
 import { getFeaturedProjects } from '@/lib/content';
+
+const HERO_WORDS = ['ATLAS', 'AI SYSTEMS', 'C++ 20', 'ENGINEER', 'FULL STACK'];
 
 export default function HomePage() {
   const featured = getFeaturedProjects();
 
   return (
     <div className="space-y-20">
-      {/* ── Hero ── */}
-      <section id="hero" className="relative overflow-hidden border border-[#003d0f] bg-[#0a0f0a] p-6 sm:p-10">
-        <HeroGlow />
-        <div className="relative z-10 space-y-6">
+      {/* ── Hero ─────────────────────────────────────────────── */}
+      <section
+        id="hero"
+        className="relative overflow-hidden border border-[#003d0f] bg-black"
+      >
+        {/* Particle canvas — full bleed, no padding */}
+        <ParticleTextEffect words={HERO_WORDS} interval={3500} />
+
+        {/* Scanline overlay on the canvas area only */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px)'
+          }}
+        />
+
+        {/* Text + CTAs */}
+        <div className="relative z-10 space-y-5 border-t border-[#003d0f] p-6 sm:p-8">
           <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#006622]">
-            COMPUTER SCIENCE PORTFOLIO · NTU SINGAPORE
+            root@yst:~$ <span className="text-[#004d1a]">./profile.sh</span>
           </p>
-          <KineticHeadline text="I design intelligent systems and ship polished software products." />
+
           <p className="max-w-2xl font-mono text-sm text-[#006622]">
             <span className="text-[#004d1a]"># </span>
             {profile.valueProp}
           </p>
-        </div>
 
-        <div className="relative z-10 mt-8 flex flex-wrap gap-3">
-          <Link
-            href="/projects"
-            className="focus-ring border border-[#00ff41] bg-transparent px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-[#00ff41] transition-all hover:bg-[#00ff41] hover:text-black hover:shadow-[0_0_20px_rgba(0,255,65,0.35)]"
-          >
-            /PROJECTS
-          </Link>
-          <Link
-            href="/resume"
-            className="focus-ring border border-[#003d0f] bg-transparent px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-[#006622] transition-all hover:border-[#00ff41] hover:text-[#00ff41]"
-          >
-            /RESUME
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              href="/projects"
+              className="focus-ring border border-[#00ff41] bg-transparent px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-[#00ff41] transition-all hover:bg-[#00ff41] hover:text-black hover:shadow-[0_0_20px_rgba(0,255,65,0.35)]"
+            >
+              /PROJECTS
+            </Link>
+            <Link
+              href="/resume"
+              className="focus-ring border border-[#003d0f] bg-transparent px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-[#006622] transition-all hover:border-[#00ff41] hover:text-[#00ff41]"
+            >
+              /RESUME
+            </Link>
+          </div>
+
+          <p className="font-mono text-[10px] text-[#003d0f]">
+            right-click + drag on canvas to scatter particles
+          </p>
         </div>
       </section>
 
