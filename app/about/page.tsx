@@ -30,7 +30,7 @@ export default function AboutPage() {
 
       <section className="grid gap-10 lg:grid-cols-[1.2fr_1fr]">
         <div className="space-y-5">
-          <p className="font-mono text-sm text-[#00cc33]">
+          <p className="font-mono text-sm text-white/70">
             I enjoy end-to-end ownership: defining problem boundaries, making architecture decisions,
             and shipping interfaces that feel intentional. Most of my work lives at the intersection
             of distributed systems and product engineering.
@@ -53,7 +53,7 @@ export default function AboutPage() {
             <p className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">
               &gt; QUERY: available_roles
             </p>
-            <p className="mt-3 font-mono text-xs text-[#00cc33]">
+            <p className="mt-3 font-mono text-xs text-white/70">
               Research opportunities in ML systems, agentic AI, or efficient inference for the
               remainder of 2026, and full-time software engineering roles from mid-2027.
             </p>

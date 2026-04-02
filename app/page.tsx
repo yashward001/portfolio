@@ -47,7 +47,7 @@ export default function HomePage() {
             root@yst:~$ <span className="text-[#004d1a]">./profile.sh</span>
           </p>
 
-          <p className="max-w-2xl font-mono text-sm text-[#006622]">
+          <p className="max-w-2xl font-mono text-sm text-white/60">
             <span className="text-[#004d1a]"># </span>
             {profile.valueProp}
           </p>

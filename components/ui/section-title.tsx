@@ -12,11 +12,11 @@ export const SectionTitle = ({ overline, title, description }: SectionTitleProps
           {overline}
         </p>
       ) : null}
-      <h2 className="font-mono text-xl font-bold uppercase tracking-wide text-[#00ff41] sm:text-2xl" style={{ textShadow: '0 0 12px rgba(0,255,65,0.4)' }}>
+      <h2 className="font-mono text-xl font-bold uppercase tracking-wide text-white sm:text-2xl">
         {title}
       </h2>
       {description ? (
-        <p className="max-w-2xl font-mono text-xs text-[#006622]">{description}</p>
+        <p className="max-w-2xl font-mono text-xs text-white/50">{description}</p>
       ) : null}
     </div>
   );

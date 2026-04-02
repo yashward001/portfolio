@@ -23,8 +23,7 @@ export default function ContactPage() {
           </p>
         </div>
 
-        <h1 className="font-mono text-xl font-bold uppercase tracking-wide text-[#00ff41]"
-          style={{ textShadow: '0 0 12px rgba(0,255,65,0.4)' }}>
+        <h1 className="font-mono text-xl font-bold uppercase tracking-wide text-white">
           Contact
         </h1>
 

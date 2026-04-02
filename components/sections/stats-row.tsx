@@ -52,10 +52,9 @@ function StatPanel({
       </span>
 
       <span
-        className="font-mono text-5xl font-bold leading-none text-[#00ff41]"
+        className="font-mono text-5xl font-bold leading-none text-white"
         style={{
-          textShadow: '0 0 8px #00ff41, 0 0 20px rgba(0,255,65,0.5)',
-          color: 'var(--green-bright, #00ff41)',
+          textShadow: '0 0 8px rgba(255,255,255,0.15)',
         }}
         aria-label={display}
       >

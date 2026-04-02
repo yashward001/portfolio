@@ -84,7 +84,7 @@ export function TerminalProjectCard({
           <motion.h3
             className="font-mono text-base font-bold uppercase tracking-[0.08em] mb-4 leading-tight line-clamp-2"
             animate={{
-              color: hovered ? "#00ff41" : "#00cc33",
+              color: hovered ? "#00ff41" : "#ffffff",
               textShadow: hovered ? "0 0 12px #00ff41" : "none",
             }}
             transition={{ duration: 0.2 }}

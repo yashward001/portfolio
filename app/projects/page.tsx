@@ -26,10 +26,7 @@ export default function ProjectsPage() {
           total {projects.length} — sorted by date desc
         </p>
       </div>
-      <h1
-        className="font-mono text-2xl font-bold uppercase tracking-wide text-[#00ff41]"
-        style={{ textShadow: '0 0 12px rgba(0,255,65,0.4)' }}
-      >
+      <h1 className="font-mono text-2xl font-bold uppercase tracking-wide text-white">
         All Projects
       </h1>
       <ProjectsGrid projects={projects} />
