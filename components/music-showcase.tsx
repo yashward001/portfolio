@@ -131,22 +131,6 @@ function SpotifyCard() {
 }
 
 /* ─── Crown jewel box ─────────────────────────────────────────────────────── */
-const CAR_ART = `
- ┌─── CROWN JEWEL ──────────┐
- │                          │
- │     ___________          │
- │    / PORSCHE  /\\         │
- │   /___________/ \\        │
- │   |  '09  911 |  |       │
- │   |___________|_/        │
- │         🏆               │
- │  HW Premium Series       │
- │  1:64 · Die-Cast         │
- │  Real Riders wheels      │
- │  Status: [ACQUIRED]      │
- │                          │
- └──────────────────────────┘`.trimStart();
-
 function CrownJewelBox() {
   const [hovered, setHovered] = useState(false);
 
@@ -156,12 +140,23 @@ function CrownJewelBox() {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <pre
-        className="crown-jewel-pulse cursor-default select-none overflow-hidden border font-mono text-[10px] leading-[1.55] text-[#00ff41]"
-        style={{ padding: '6px 8px' }}
-      >
-        {CAR_ART}
-      </pre>
+      <div className="crown-jewel-pulse relative h-[88px] w-[88px] overflow-hidden border">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="https://i.ebayimg.com/images/g/keAAAOSwqCZmogO8/s-l1200.jpg"
+          alt="Hot Wheels Premium '09 Porsche 911"
+          className="h-full w-full object-cover"
+        />
+        {/* Scanline overlay */}
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background:
+              'repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.18) 3px,rgba(0,0,0,0.18) 6px)',
+          }}
+        />
+        <div className="pointer-events-none absolute inset-0 bg-[#00ff41]/5" />
+      </div>
 
       <AnimatePresence>
         {hovered && (
@@ -170,7 +165,7 @@ function CrownJewelBox() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 4 }}
             transition={{ duration: 0.15 }}
-            className="absolute left-0 top-full z-[100] mt-1.5 w-full border border-[#003d0f] bg-black p-3 font-mono text-[10px] leading-relaxed shadow-[0_0_20px_rgba(0,255,65,0.08)]"
+            className="absolute right-0 top-full z-[100] mt-1.5 w-56 border border-[#003d0f] bg-black p-3 font-mono text-[10px] leading-relaxed shadow-[0_0_20px_rgba(0,255,65,0.08)]"
           >
             <p className="text-[#00ff41]">&gt; Hot Wheels Premium · Car Culture Series</p>
             <p className="text-[#33ff66]">&gt; &apos;09 Porsche 911</p>
