@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
 
 import { TextScramble } from '@/components/ui/text-scramble';
+import { MusicShowcase } from '@/components/music-showcase';
 import { profile } from '@/content/profile';
 
 /* ─── Scroll animation preset ───────────────────────────────────────────── */
@@ -329,7 +330,10 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* ── SECTION 4: SKILLS MATRIX ─────────────────────────────────────── */}
+      {/* ── SECTION 4: MUSIC SHOWCASE ────────────────────────────────────── */}
+      <MusicShowcase />
+
+      {/* ── SECTION 5: SKILLS MATRIX ────────────────────────────────────── */}
       <section className="border-b border-[#003d0f] px-6 py-14">
         <motion.p {...fadeUp} className="mb-10 font-mono text-[11px] uppercase tracking-[0.25em] text-[#00aa44]">
           &gt; SKILLS_MATRIX.json
