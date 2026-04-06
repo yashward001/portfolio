@@ -50,18 +50,52 @@ export const CommandPalette = ({ items }: { items: CommandItem[] }) => {
     }
   }, [open]);
 
+  const [eggMsg, setEggMsg] = useState<string | null>(null);
+
   const filtered = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     const base = items.filter((item) => item.href !== pathname);
-    if (!normalized) return base.slice(0, 8);
+    if (!normalized) { setEggMsg(null); return base.slice(0, 8); }
 
+    // ── Egg 3: secret commands ──
+    if (normalized === 'sudo' || normalized === 'hack') {
+      setEggMsg(null);
+      return [{
+        title: 'sudo: Permission denied (you are not root)',
+        href: '#sudo',
+        type: 'page' as const,
+        meta: 'egg',
+      }];
+    }
+    if (normalized.includes('hire')) {
+      setEggMsg('👀 Good taste detected → redirecting to /contact...');
+      setTimeout(() => { router.push('/contact'); setOpen(false); }, 1500);
+      return [{
+        title: '👀 Good taste detected → /contact',
+        href: '/contact',
+        type: 'page' as const,
+        meta: 'egg',
+      }];
+    }
+    if (normalized === 'atlas') {
+      setEggMsg('ATLAS ONLINE · 11 states loaded · Ready.');
+      setTimeout(() => setEggMsg(null), 2500);
+      return [{
+        title: '[ATLAS ONLINE] Agentic system initialized. 11 states loaded. Ready.',
+        href: '/projects/atlas-agentic-desktop-automation',
+        type: 'project' as const,
+        meta: 'egg',
+      }];
+    }
+
+    setEggMsg(null);
     return base
       .filter((item) => {
         const haystack = `${item.title} ${item.meta ?? ''} ${item.type}`.toLowerCase();
         return haystack.includes(normalized);
       })
       .slice(0, 8);
-  }, [items, pathname, query]);
+  }, [items, pathname, query, router]);
 
   useEffect(() => {
     if (activeIndex > filtered.length - 1) {
@@ -70,6 +104,7 @@ export const CommandPalette = ({ items }: { items: CommandItem[] }) => {
   }, [activeIndex, filtered.length]);
 
   const onNavigate = (href: string) => {
+    if (href === '#sudo') return; // egg — no navigation
     setOpen(false);
     router.push(href as Route);
   };
@@ -132,6 +167,11 @@ export const CommandPalette = ({ items }: { items: CommandItem[] }) => {
                 />
               </div>
 
+              {eggMsg && (
+                <div className="border-b border-[#003d0f] px-4 py-2 font-mono text-[10px] text-[#00ff41] animate-pulse">
+                  &gt; {eggMsg}
+                </div>
+              )}
               <ul className="max-h-80 overflow-y-auto p-2" role="listbox" aria-label="Search results">
                 {filtered.length ? (
                   filtered.map((item, index) => {

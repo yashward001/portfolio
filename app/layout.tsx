@@ -6,6 +6,7 @@ import { Analytics } from '@/components/layout/analytics';
 import { Footer } from '@/components/layout/footer';
 import { Navbar } from '@/components/layout/navbar';
 import { ScrollProgress } from '@/components/layout/scroll-progress';
+import { EasterEggsInit } from '@/components/easter-eggs-init';
 import { TerminalCursor } from '@/components/ui/terminal-cursor';
 import { getPosts, getProjects } from '@/lib/content';
 import { baseMetadata } from '@/lib/metadata';
@@ -50,6 +51,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         >
           Skip to content
         </a>
+        <EasterEggsInit />
         <ScrollProgress />
         <TerminalCursor />
         <Navbar commandItems={commandItems} />

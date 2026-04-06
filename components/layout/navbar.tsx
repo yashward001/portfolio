@@ -25,6 +25,7 @@ export const Navbar = ({ commandItems }: { commandItems: CommandItem[] }) => {
         {/* Terminal prompt */}
         <Link
           href="/"
+          data-egg-prompt
           className="focus-ring font-mono text-xs text-[#006622] transition-colors hover:text-[#00ff41]"
         >
           <span className="text-[#00ff41]">root@yst</span>
