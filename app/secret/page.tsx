@@ -3,34 +3,39 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
-const LINES = [
-  "root@yst:~$ ssh yash@classified.systems",
-  "Connecting to classified.systems...",
-  "Authentication successful.",
-  "",
-  `Last login: ${new Date().toUTCString()}`,
-  "",
-  "  ██╗   ██╗ █████╗ ███████╗██╗  ██╗",
-  "  ╚██╗ ██╔╝██╔══██╗██╔════╝██║  ██║",
-  "   ╚████╔╝ ███████║███████╗███████║",
-  "    ╚██╔╝  ██╔══██║╚════██║██╔══██║",
-  "     ██║   ██║  ██║███████║██║  ██║",
-  "",
-  '  "The fact that you found this page means',
-  "   you're the kind of engineer I want to",
-  '   work with."',
-  "",
-  "  → Email:    yashwardhansingh.tomar@outlook.com",
-  "  → GitHub:   github.com/yashward001",
-  "  → LinkedIn: linkedin.com/in/yashwardhan-singh-tomar",
-  "",
-  "root@classified:~$ █",
-];
+function getLines() {
+  return [
+    "root@yst:~$ ssh yash@classified.systems",
+    "Connecting to classified.systems...",
+    "Authentication successful.",
+    "",
+    `Last login: ${new Date().toUTCString()}`,
+    "",
+    "  ██╗   ██╗ █████╗ ███████╗██╗  ██╗",
+    "  ╚██╗ ██╔╝██╔══██╗██╔════╝██║  ██║",
+    "   ╚████╔╝ ███████║███████╗███████║",
+    "    ╚██╔╝  ██╔══██║╚════██║██╔══██║",
+    "     ██║   ██║  ██║███████║██║  ██║",
+    "",
+    '  "The fact that you found this page means',
+    "   you're the kind of engineer I want to",
+    '   work with."',
+    "",
+    "  → Email:    yashwardhansingh.tomar@outlook.com",
+    "  → GitHub:   github.com/yashward001",
+    "  → LinkedIn: linkedin.com/in/yashwardhan-singh-tomar",
+    "",
+    "root@classified:~$ █",
+  ];
+}
 
 export default function SecretPage() {
   const [shown, setShown] = useState<string[]>([]);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
+    const LINES = getLines();
+    setTotal(LINES.length);
     let i = 0;
     const tick = () => {
       if (i >= LINES.length) return;
@@ -68,7 +73,7 @@ export default function SecretPage() {
         ))}
       </div>
 
-      {shown.length === LINES.length && (
+      {total > 0 && shown.length === total && (
         <div className="mx-auto mt-12 max-w-2xl">
           <Link
             href="/"
