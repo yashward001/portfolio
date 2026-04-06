@@ -1,6 +1,6 @@
 // SETUP REQUIRED:
 // 1. Go to developer.spotify.com/dashboard → Create App
-// 2. Set redirect URI to http://localhost:3000 (for dev)
+// 2. Set redirect URI to your Vercel URL (e.g. https://yoursite.vercel.app)
 // 3. Copy Client ID and Client Secret
 // 4. Add to .env.local:
 //    SPOTIFY_CLIENT_ID=your_client_id
@@ -8,9 +8,6 @@
 //    SPOTIFY_PLAYLIST_ID=4H0JmExp8mxfWXM0TMxJ9s
 //    NEXT_PUBLIC_SPOTIFY_PLAYLIST_ID=4H0JmExp8mxfWXM0TMxJ9s
 // 5. Add same vars to Vercel dashboard → Settings → Environment Variables
-//
-// NOTE: Audio Features / Recommendations are deprecated for new apps (Nov 2024).
-// This route only uses playlist metadata + track info, which are still available.
 
 const getAccessToken = async (): Promise<string> => {
   const res = await fetch('https://accounts.spotify.com/api/token', {
@@ -41,21 +38,11 @@ export async function GET() {
   try {
     const token = await getAccessToken();
 
-    const [playlistRes, tracksRes] = await Promise.all([
-      fetch(
-        `https://api.spotify.com/v1/playlists/${playlistId}?fields=name,description,followers,images,tracks.total,external_urls`,
-        { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 3600 } }
-      ),
-      fetch(
-        `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=50&fields=items(added_at,track(name,artists,album(name,images,release_date),duration_ms,external_urls,explicit))`,
-        { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 3600 } }
-      ),
-    ]);
-
-    const [playlist, tracksData] = await Promise.all([
-      playlistRes.json(),
-      tracksRes.json(),
-    ]);
+    const res = await fetch(
+      `https://api.spotify.com/v1/playlists/${playlistId}?fields=name,description,followers,images,tracks.total,external_urls`,
+      { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 3600 } }
+    );
+    const playlist = await res.json();
 
     return Response.json({
       name: playlist.name,
@@ -64,22 +51,6 @@ export async function GET() {
       totalTracks: playlist.tracks?.total ?? 0,
       coverImage: playlist.images?.[0]?.url ?? null,
       spotifyUrl: playlist.external_urls?.spotify ?? null,
-      tracks: (tracksData.items ?? [])
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .filter((item: any) => item?.track)
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        .map((item: any) => ({
-          name: item.track.name,
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          artists: item.track.artists.map((a: any) => a.name).join(', '),
-          album: item.track.album.name,
-          albumArt: item.track.album.images?.[1]?.url ?? item.track.album.images?.[0]?.url ?? null,
-          releaseYear: item.track.album.release_date?.split('-')[0] ?? '',
-          addedAt: item.added_at,
-          durationMs: item.track.duration_ms,
-          spotifyUrl: item.track.external_urls?.spotify ?? null,
-          explicit: item.track.explicit,
-        })),
     });
   } catch {
     return Response.json({ error: 'fetch_failed' }, { status: 500 });
