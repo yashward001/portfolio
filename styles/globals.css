@@ -94,6 +94,16 @@ body::after {
   to   { transform: translateX(-50%); }
 }
 
+/* ─── Crown jewel pulse border ────────────────────────────────────────────── */
+@keyframes pulse-border {
+  0%, 100% { border-color: #00ff41; box-shadow: 0 0 8px rgba(0,255,65,0.2); }
+  50%       { border-color: #33ff66; box-shadow: 0 0 24px rgba(0,255,65,0.35); }
+}
+
+.crown-jewel-pulse {
+  animation: pulse-border 3s ease-in-out infinite;
+}
+
 /* ─── Glow text ──────────────────────────────────────────────────────────── */
 .glow {
   text-shadow:
