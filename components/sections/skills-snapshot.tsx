@@ -48,7 +48,7 @@ export const SkillsSnapshot = () => {
               <span className="w-[4.5rem] shrink-0 font-mono text-[10px] uppercase tracking-widest text-[#004d1a]">
                 [{CATEGORY_PREFIX[group.category] ?? group.category}]
               </span>
-              <span className="font-mono text-xs text-[#00cc33]">
+              <span className="font-mono text-xs text-[#33ff66]">
                 {group.items.join(' · ')}
               </span>
             </div>

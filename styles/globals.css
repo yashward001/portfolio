@@ -9,15 +9,16 @@
   --card:    120 25% 6%;       /* #0a0f0a — panel background        */
   --card2:   120 34% 8%;       /* #0d1a0d — hover state             */
   --fg:      135 100% 50%;     /* #00ff41 — matrix green (headings) */
-  --muted:   138 100% 20%;     /* #006622 — muted green (meta)      */
+  --muted:   135 100% 33%;     /* #00aa44 — labels / meta           */
   --border:  135 100% 12%;     /* #003d0f — border / divider        */
   --accent:  135 100% 50%;     /* #00ff41 — primary accent          */
-  --success: 135 100% 40%;     /* #00cc33 — secondary green (body)  */
+  --success: 135 100% 60%;     /* #33ff66 — body text (readable)    */
 
   /* raw hex tokens for non-Tailwind usage */
   --green-bright:      #00ff41;
-  --green-mid:         #00cc33;
+  --green-mid:         #33ff66;  /* body text — brighter than before  */
   --green-dim:         #003d0f;
+  --green-muted:       #00aa44;  /* labels, meta                      */
   --green-glow:        rgba(0, 255, 65, 0.15);
   --green-glow-strong: rgba(0, 255, 65, 0.35);
 }
@@ -130,6 +131,8 @@ body::after {
 .prose {
   @apply max-w-none;
   color: var(--green-mid);
+  font-size: 0.9375rem; /* 15px */
+  line-height: 1.75;
 }
 
 .prose h1, .prose h2, .prose h3, .prose h4, .prose h5 {
@@ -171,7 +174,7 @@ body::after {
 
 .prose blockquote {
   border-left: 2px solid var(--green-dim);
-  color: var(--green-mid);
+  color: var(--green-muted);
 }
 
 .prose hr {

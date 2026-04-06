@@ -128,7 +128,7 @@ export const CommandPalette = ({ items }: { items: CommandItem[] }) => {
                   onChange={(event) => setQuery(event.target.value)}
                   onKeyDown={onListKeyDown}
                   placeholder="search projects, posts, pages..."
-                  className="w-full bg-transparent font-mono text-xs text-[#00cc33] outline-none placeholder:text-[#003d0f]"
+                  className="w-full bg-transparent font-mono text-xs text-[#33ff66] outline-none placeholder:text-[#003d0f]"
                 />
               </div>
 
@@ -143,7 +143,7 @@ export const CommandPalette = ({ items }: { items: CommandItem[] }) => {
                         <button
                           type="button"
                           className={`focus-ring flex w-full items-center justify-between px-3 py-2 text-left font-mono text-xs transition-colors ${
-                            active ? 'bg-[#003d0f] text-[#00ff41]' : 'text-[#006622] hover:bg-[#0a0f0a] hover:text-[#00cc33]'
+                            active ? 'bg-[#003d0f] text-[#00ff41]' : 'text-[#006622] hover:bg-[#0a0f0a] hover:text-[#33ff66]'
                           }`}
                           role="option"
                           aria-selected={active}

@@ -87,7 +87,7 @@ function SystemStatusLine() {
       style={{ color: 'var(--text-muted, #006622)' }}
     >
       system initialized. 4 modules loaded. uptime:{' '}
-      <span className="text-[#00cc33]">{date || '…'}</span>
+      <span className="text-[#33ff66]">{date || '…'}</span>
     </p>
   );
 }

@@ -63,7 +63,7 @@ export const ProjectGallery = ({ project }: { project: Project }) => {
             className={`focus-ring border px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest transition-colors ${
               active === tab.key
                 ? 'border-[#00ff41] bg-[#003d0f] text-[#00ff41]'
-                : 'border-[#003d0f] text-[#006622] hover:border-[#00ff41]/50 hover:text-[#00cc33]'
+                : 'border-[#003d0f] text-[#006622] hover:border-[#00ff41]/50 hover:text-[#33ff66]'
             }`}
             onClick={() => setActive(tab.key)}
           >

@@ -124,7 +124,7 @@ export const ProjectsGrid = ({ projects }: { projects: Project[] }) => {
                 type="button"
                 onClick={() => setSortBy(s)}
                 className={`focus-ring px-2 py-1 transition-colors ${
-                  sortBy === s ? 'text-[#00ff41]' : 'text-[#006622] hover:text-[#00cc33]'
+                  sortBy === s ? 'text-[#00ff41]' : 'text-[#006622] hover:text-[#33ff66]'
                 }`}
               >
                 {s}

@@ -49,7 +49,7 @@ export const KineticHeadline = ({ text }: { text: string }) => {
     if (!line) return 'block h-4';
     if (line.startsWith('root@')) return 'block text-[#006622]';
     if (line.startsWith('>'))     return 'block text-white text-2xl sm:text-4xl font-bold tracking-tight';
-    return 'block text-[#00cc33]';
+    return 'block text-[#33ff66]';
   };
 
   const currentLineInBounds = currentLine < HERO_LINES.length;

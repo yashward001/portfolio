@@ -33,7 +33,7 @@ export const Timeline = () => {
             <p className="text-[11px] text-[#006622]">
               <span className="text-[#00ff41]">{toLogDate(item.start)}</span>
               {' '}
-              <span className={isEdu ? 'text-[#004d1a]' : 'text-[#00cc33]'}>
+              <span className={isEdu ? 'text-[#004d1a]' : 'text-[#33ff66]'}>
                 {dotFill(item.org, item.title)}
               </span>
             </p>

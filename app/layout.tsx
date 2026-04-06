@@ -43,7 +43,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
 
   return (
     <html lang="en" className="dark">
-      <body className={`${mono.variable} min-h-screen bg-black font-mono text-[#00cc33]`}>
+      <body className={`${mono.variable} min-h-screen bg-black font-mono text-[#33ff66]`}>
         <a
           href="#main"
           className="sr-only fixed left-4 top-4 z-[100] bg-black px-4 py-2 text-[#00ff41] focus:not-sr-only focus:outline focus:outline-[#00ff41]"

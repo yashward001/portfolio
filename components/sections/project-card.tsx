@@ -27,12 +27,12 @@ export const ProjectCard = ({ project }: { project: Project }) => {
         </h3>
 
         {/* Summary */}
-        <p className="font-mono text-xs text-[#00cc33] leading-relaxed">{project.summary}</p>
+        <p className="font-mono text-xs text-[#33ff66] leading-relaxed">{project.summary}</p>
 
         {/* Impact metric */}
         <div className="border border-[#003d0f] bg-black/50 px-3 py-2">
           <span className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">IMPACT: </span>
-          <span className="font-mono text-xs text-[#00cc33]">{project.impactMetric}</span>
+          <span className="font-mono text-xs text-[#33ff66]">{project.impactMetric}</span>
         </div>
 
         {/* Stack */}
@@ -62,7 +62,7 @@ export const ProjectCard = ({ project }: { project: Project }) => {
         <div className="mt-auto flex items-center justify-between pt-2">
           <Link
             href={`/projects/${project.slug}`}
-            className="focus-ring font-mono text-xs text-[#00cc33] transition-colors hover:text-[#00ff41] hover:[text-shadow:0_0_6px_#00ff41]"
+            className="focus-ring font-mono text-xs text-[#33ff66] transition-colors hover:text-[#00ff41] hover:[text-shadow:0_0_6px_#00ff41]"
           >
             [OPEN CASE STUDY ▶]
           </Link>

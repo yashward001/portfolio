@@ -55,9 +55,9 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
           style={{ textShadow: '0 0 16px rgba(0,255,65,0.4)' }}>
           {project.title}
         </h1>
-        <p className="font-mono text-sm text-[#006622]">{project.summary}</p>
+        <p className="font-mono text-sm text-white/75">{project.summary}</p>
 
-        <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] text-[#006622]">
+        <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] text-[#00aa44]">
           <span>ROLE: {project.role}</span>
           <span className="text-[#003d0f]">|</span>
           <span>{formatDate(project.date)}</span>
@@ -75,17 +75,17 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
 
         <div className="border border-[#003d0f] bg-[#0a0f0a] px-3 py-2">
           <span className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">IMPACT: </span>
-          <span className="font-mono text-xs text-[#00cc33]">{project.impactMetric}</span>
+          <span className="font-mono text-xs text-[#33ff66]">{project.impactMetric}</span>
         </div>
 
         <div className="flex gap-4">
           {project.links.repo && (
-            <a href={project.links.repo} className="focus-ring inline-flex items-center gap-1 font-mono text-xs text-[#00cc33] transition-colors hover:text-[#00ff41]" target="_blank" rel="noreferrer">
+            <a href={project.links.repo} className="focus-ring inline-flex items-center gap-1 font-mono text-xs text-[#33ff66] transition-colors hover:text-[#00ff41]" target="_blank" rel="noreferrer">
               <Github className="h-3 w-3" /> [REPOSITORY]
             </a>
           )}
           {(project.links.live || project.links.demo) && (
-            <a href={project.links.live ?? project.links.demo ?? '#'} className="focus-ring inline-flex items-center gap-1 font-mono text-xs text-[#00cc33] transition-colors hover:text-[#00ff41]" target="_blank" rel="noreferrer">
+            <a href={project.links.live ?? project.links.demo ?? '#'} className="focus-ring inline-flex items-center gap-1 font-mono text-xs text-[#33ff66] transition-colors hover:text-[#00ff41]" target="_blank" rel="noreferrer">
               <ArrowUpRight className="h-3 w-3" /> [LIVE DEMO]
             </a>
           )}
@@ -100,7 +100,7 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
         ].map(({ label, body }) => (
           <div key={label} className="border border-[#003d0f] bg-[#0a0f0a] p-3">
             <p className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">{label}</p>
-            <p className="mt-1.5 font-mono text-xs text-[#00cc33]">{body}</p>
+            <p className="mt-1.5 font-mono text-xs text-[#33ff66]">{body}</p>
           </div>
         ))}
       </section>

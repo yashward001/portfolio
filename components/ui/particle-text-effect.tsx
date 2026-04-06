@@ -9,7 +9,7 @@ interface RGB { r: number; g: number; b: number }
 /* Terminal-green palette — one per word, cycles */
 const GREEN_PALETTE: RGB[] = [
   { r: 0,   g: 255, b: 65  }, // #00ff41  matrix bright
-  { r: 0,   g: 204, b: 51  }, // #00cc33  mid green
+  { r: 51,  g: 255, b: 102 }, // #33ff66  mid green
   { r: 0,   g: 230, b: 110 }, // aqua-green
   { r: 60,  g: 255, b: 80  }, // lime-green
   { r: 0,   g: 180, b: 60  }, // darker green
@@ -222,7 +222,7 @@ export function ParticleTextEffect({
     if (!canvas) return
 
     canvas.width  = 1000
-    canvas.height = 400
+    canvas.height = 260
 
     spawnWord(words[0], canvas, 0)
     animate()

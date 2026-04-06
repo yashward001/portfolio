@@ -34,7 +34,7 @@ const TermField = ({
         name={id}
         required={required}
         rows={rows}
-        className="focus-ring w-full border-b border-[#003d0f] bg-transparent px-2 py-1.5 font-mono text-sm text-[#00cc33] placeholder:text-[#003d0f] focus:border-[#00ff41] focus:outline-none"
+        className="focus-ring w-full border-b border-[#003d0f] bg-transparent px-2 py-1.5 font-mono text-sm text-[#33ff66] placeholder:text-[#003d0f] focus:border-[#00ff41] focus:outline-none"
         placeholder="█"
       />
     ) : (
@@ -43,7 +43,7 @@ const TermField = ({
         name={id}
         type={type}
         required={required}
-        className="focus-ring w-full border-b border-[#003d0f] bg-transparent px-2 py-1.5 font-mono text-sm text-[#00cc33] placeholder:text-[#003d0f] focus:border-[#00ff41] focus:outline-none"
+        className="focus-ring w-full border-b border-[#003d0f] bg-transparent px-2 py-1.5 font-mono text-sm text-[#33ff66] placeholder:text-[#003d0f] focus:border-[#00ff41] focus:outline-none"
         placeholder="█"
       />
     )}

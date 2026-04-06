@@ -23,7 +23,7 @@ export default function HomePage() {
   const featured = getFeaturedProjects();
 
   return (
-    <div className="space-y-20">
+    <div className="space-y-14">
       {/* ── Hero ─────────────────────────────────────────────── */}
       <section
         id="hero"
@@ -47,8 +47,8 @@ export default function HomePage() {
             root@yst:~$ <span className="text-[#004d1a]">./profile.sh</span>
           </p>
 
-          <p className="max-w-2xl font-mono text-sm text-white/60">
-            <span className="text-[#004d1a]"># </span>
+          <p className="max-w-2xl font-mono text-sm text-white/80">
+            <span className="text-[#00aa44]"># </span>
             {profile.valueProp}
           </p>
 
