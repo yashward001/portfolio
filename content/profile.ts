@@ -15,7 +15,7 @@ export const profile: Profile = {
     { label: 'Internships', value: '4' },
     { label: 'Major Projects', value: '10+' },
     { label: 'Leadership Roles', value: '4' },
-    { label: 'CGPA', value: '4.0/5.0' }
+    { label: 'Upcoming Launches', value: '1' }
   ],
   skills: [
     'Python',
@@ -64,7 +64,7 @@ export const profile: Profile = {
       title: 'AI Software Development Intern',
       org: 'Gigin.ai',
       start: 'Apr 2025',
-      end: 'Present',
+      end: 'Jul 2025',
       detail:
         'Developed academic document forensics with an ensemble architecture, improving fraud detection accuracy and reducing verification turnaround time.'
     },

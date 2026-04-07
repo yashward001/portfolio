@@ -8,7 +8,7 @@ const STATS = [
   { label: '//INTERNSHIPS', value: '04',        numeric: 4,   suffix: '',    sub: 'industry roles'  },
   { label: '//PROJECTS',    value: '10+',       numeric: 10,  suffix: '+',   sub: 'major builds'    },
   { label: '//UPCOMING',    value: '01',        numeric: 1,   suffix: '',    sub: 'launches'        },
-  { label: '//CGPA',        value: '4',         numeric: 4,   suffix: '',    sub: 'NTU scale'       },
+  { label: '//SKILLS',      value: '20+',       numeric: 20,  suffix: '+',   sub: 'technologies'    },
 ] as const;
 
 function useCountUp(target: number, duration = 1500) {

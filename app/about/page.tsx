@@ -50,11 +50,11 @@ const EXPERIENCE = [
     tags: ['COPILOT STUDIO', 'RAG', 'POWER AUTOMATE', 'SHAREPOINT'],
   },
   {
-    dates: 'Apr 2025 → Present',
+    dates: 'Apr 2025 → Jul 2025',
     company: 'Gigin.ai',
     location: 'Remote',
     role: 'AI Software Development Intern',
-    status: 'ACTIVE',
+    status: 'COMPLETED',
     highlight: false,
     bullets: [
       'Built document integrity pipeline combining extraction checks, embedding similarity, and layout/metadata heuristics',
@@ -99,7 +99,6 @@ const EXPERIENCE = [
     bullets: [
       'Concentrations: Intelligence and Modelling/Simulations',
       'Relevant: Data Structures, OS, Computer Networks, ML, Database Systems, Probability & Statistics',
-      'GPA: 4.00 / 5.00',
     ],
     tags: ['CS', 'ML', 'NTU', 'SINGAPORE'],
   },
@@ -121,7 +120,6 @@ const STATUS_ROWS = [
   { key: 'STATUS',   val: 'Active / Available' },
   { key: 'LOCATION', val: 'Singapore' },
   { key: 'DEGREE',   val: 'B.Eng CS, NTU' },
-  { key: 'GPA',      val: '4.00 / 5.00' },
   { key: 'GRAD',     val: 'Aug 2027' },
   { key: 'FOCUS',    val: 'Agentic Systems' },
   { key: '',         val: 'ML Infrastructure' },
