@@ -125,6 +125,10 @@
   color: hsl(var(--accent));
 }
 
+.prose img {
+  @apply my-8 w-full rounded-2xl border border-border shadow-card;
+}
+
 .prose hr {
   @apply border-border;
 }

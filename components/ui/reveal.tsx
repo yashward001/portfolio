@@ -12,14 +12,11 @@ type RevealProps = {
 export const Reveal = ({ children, delay = 0, className }: RevealProps) => {
   const shouldReduceMotion = useReducedMotion();
 
-  if (shouldReduceMotion) {
-    return <div className={className}>{children}</div>;
-  }
-
+  // Always the same element so server and client markup match; reduced motion just skips the entrance.
   return (
     <motion.div
       className={className}
-      initial={{ opacity: 0, y: 16 }}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.45, delay }}

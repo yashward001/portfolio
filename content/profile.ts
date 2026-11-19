@@ -156,8 +156,12 @@ export const profile: Profile = {
     {
       title: 'Winner, Singapore-India Hackathon 2026',
       detail:
-        'Sustainability & Climate Action track · Built Farmora, AI crop planning for FPOs',
-      date: 'Nov 2026'
+        'Sustainability & Climate Action track, set by Singapore’s Ministry of Trade and Industry. Built Farmora with team Holy Crop: crop planning that helps Farmer Producer Organisations meet exporter demand.',
+      date: 'Nov 2026',
+      placement: '1st place · 20 teams, 120 students',
+      url: 'https://news.smu.edu.sg/news/2026/11/18/singapore-india-hackathon-2026-names-four-winning-ideas-better-future',
+      source: 'SMU Newsroom',
+      projectSlug: 'farmora'
     }
   ],
   leadership: [

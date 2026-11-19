@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useState, type ReactNode } from 'react';
 
 import { profile } from '@/content/profile';
+import { AwardLinks } from '@/components/ui/award-links';
 import { city, shortOrg, shortTitle, yearRange } from '@/lib/experience';
 import { cn } from '@/lib/utils';
 
@@ -385,10 +386,18 @@ export const AwardCard = ({
         <p className="mt-4 text-[15px] font-semibold leading-snug">
           {award.title}
         </p>
-        <p className="mt-1 text-[13px] leading-relaxed text-muted">
+        {award.placement && (
+          <p className="mt-1 text-[13px] font-medium text-accent">
+            {award.placement}
+          </p>
+        )}
+        <p className="mt-1.5 line-clamp-4 text-[13px] leading-relaxed text-muted">
           {award.detail}
         </p>
-        <p className="mt-auto pt-3 text-xs text-subtle">{award.date}</p>
+        <div className="mt-auto flex items-end justify-between gap-3 pt-4">
+          <AwardLinks award={award} />
+          <p className="shrink-0 text-xs text-subtle">{award.date}</p>
+        </div>
       </div>
     </BentoCard>
   );

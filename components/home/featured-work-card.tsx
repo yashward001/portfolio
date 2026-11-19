@@ -32,7 +32,11 @@ export const FeaturedWorkCard = ({
   const [paused, setPaused] = useState(false);
   const [userPicked, setUserPicked] = useState(false);
   const reduceMotion = useReducedMotion();
-  const autoplay = !reduceMotion && !userPicked && items.length > 1;
+  // Decided after mount: the server can't know the visitor's motion preference, and rendering
+  // the progress bar conditionally on it would make server and client markup disagree.
+  const [motionOk, setMotionOk] = useState(false);
+  useEffect(() => setMotionOk(!reduceMotion), [reduceMotion]);
+  const autoplay = motionOk && !userPicked && items.length > 1;
 
   useEffect(() => {
     if (!autoplay || paused) return;

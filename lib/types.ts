@@ -39,7 +39,15 @@ export const profileSchema = z.object({
   ),
   awards: z
     .array(
-      z.object({ title: z.string(), detail: z.string(), date: z.string() })
+      z.object({
+        title: z.string(),
+        detail: z.string(),
+        date: z.string(),
+        placement: z.string().optional(),
+        url: z.string().url().optional(),
+        source: z.string().optional(),
+        projectSlug: z.string().optional()
+      })
     )
     .default([]),
   leadership: z

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Download, ExternalLink } from 'lucide-react';
 import type { ReactNode } from 'react';
 
+import { AwardLinks } from '@/components/ui/award-links';
 import { PageHeader } from '@/components/ui/page-header';
 import { profile } from '@/content/profile';
 
@@ -133,7 +134,11 @@ export default function ResumePage() {
             >
               <p className="text-[15px]">
                 <span className="font-semibold">{award.title}</span>{' '}
-                <span className="text-fg/80">{award.detail}</span>
+                <span className="text-fg/80">
+                  {award.placement ? `${award.placement}. ` : ''}
+                  {award.detail}
+                </span>
+                <AwardLinks award={award} className="mt-1" />
               </p>
               <p className="shrink-0 text-sm text-subtle">{award.date}</p>
             </div>

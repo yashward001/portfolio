@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { CollectionCard, ContactCta } from '@/components/home/bento-cards';
 import { NowBuildingCard } from '@/components/home/now-building-card';
 import { PlaylistCard } from '@/components/home/playlist-card';
+import { AwardLinks } from '@/components/ui/award-links';
 import { PageHeader } from '@/components/ui/page-header';
 import { Reveal } from '@/components/ui/reveal';
 import { profile } from '@/content/profile';
@@ -135,10 +136,18 @@ export default function AboutPage() {
               {profile.awards.map((award) => (
                 <li key={award.title}>
                   <p className="font-semibold">{award.title}</p>
+                  {award.placement && (
+                    <p className="mt-0.5 text-sm font-medium text-accent">
+                      {award.placement}
+                    </p>
+                  )}
                   <p className="mt-1 text-sm leading-relaxed text-muted">
                     {award.detail}
                   </p>
-                  <p className="mt-1 text-xs text-subtle">{award.date}</p>
+                  <div className="mt-2 flex items-center justify-between gap-3">
+                    <AwardLinks award={award} />
+                    <p className="text-xs text-subtle">{award.date}</p>
+                  </div>
                 </li>
               ))}
             </ul>
