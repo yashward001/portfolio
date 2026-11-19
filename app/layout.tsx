@@ -1,64 +1,50 @@
-import type { Metadata } from 'next';
-import { JetBrains_Mono } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
+import { Inter_Tight, JetBrains_Mono } from 'next/font/google';
 import type { ReactNode } from 'react';
 
 import { Analytics } from '@/components/layout/analytics';
-import { Footer } from '@/components/layout/footer';
-import { Navbar } from '@/components/layout/navbar';
-import { ScrollProgress } from '@/components/layout/scroll-progress';
-import { EasterEggsInit } from '@/components/easter-eggs-init';
-import { TerminalCursor } from '@/components/ui/terminal-cursor';
-import { getPosts, getProjects } from '@/lib/content';
+import { SiteFooter } from '@/components/layout/site-footer';
+import { SiteHeader } from '@/components/layout/site-header';
 import { baseMetadata } from '@/lib/metadata';
 
 import '@/styles/globals.css';
+
+const sans = Inter_Tight({
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap'
+});
 
 const mono = JetBrains_Mono({
   subsets: ['latin'],
   variable: '--font-mono',
   display: 'swap',
-  weight: ['300', '400', '500', '600', '700']
+  weight: ['400', '500']
 });
 
 export const metadata: Metadata = baseMetadata;
 
-export default function RootLayout({ children }: { children: ReactNode }) {
-  const commandItems = [
-    ...getProjects().map((project) => ({
-      title: project.title,
-      href: `/projects/${project.slug}`,
-      type: 'project' as const,
-      meta: project.tags.join(' ')
-    })),
-    ...getPosts().map((post) => ({
-      title: post.title,
-      href: `/blog/${post.slug}`,
-      type: 'post' as const,
-      meta: post.tags.join(' ')
-    })),
-    { title: 'All Projects', href: '/projects', type: 'page' as const, meta: 'case studies engineering' },
-    { title: 'About', href: '/about', type: 'page' as const, meta: 'background' },
-    { title: 'Resume', href: '/resume', type: 'page' as const, meta: 'experience' },
-    { title: 'Contact', href: '/contact', type: 'page' as const, meta: 'reach out' }
-  ];
+export const viewport: Viewport = {
+  themeColor: '#f5f5f3'
+};
 
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en" className="dark">
-      <body className={`${mono.variable} min-h-screen bg-black font-mono text-[#33ff66]`}>
+    <html lang="en" className={`${sans.variable} ${mono.variable}`}>
+      <body className="min-h-screen">
         <a
           href="#main"
-          className="sr-only fixed left-4 top-4 z-[100] bg-black px-4 py-2 text-[#00ff41] focus:not-sr-only focus:outline focus:outline-[#00ff41]"
+          className="sr-only fixed left-4 top-4 z-[100] rounded-full bg-fg px-4 py-2 text-sm text-white focus:not-sr-only"
         >
           Skip to content
         </a>
-        <EasterEggsInit />
-        <ScrollProgress />
-        <TerminalCursor />
-        <Navbar commandItems={commandItems} />
-        <main id="main" className="container py-10">
-          {children}
-        </main>
-        <Footer />
+        <div className="mx-auto flex min-h-screen w-full max-w-[920px] flex-col px-4 sm:px-6">
+          <SiteHeader />
+          <main id="main" className="flex-1 pb-20 pt-10 sm:pt-14">
+            {children}
+          </main>
+          <SiteFooter />
+        </div>
         <Analytics />
       </body>
     </html>

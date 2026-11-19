@@ -7,24 +7,63 @@ export async function GET(request: Request) {
   const title = searchParams.get('title') ?? 'Yashwardhan Singh Tomar';
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        height: '100%',
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        background: '#f5f5f3',
+        color: '#121212',
+        padding: 72
+      }}
+    >
       <div
         style={{
-          height: '100%',
-          width: '100%',
           display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between',
-          background: 'linear-gradient(135deg, #0f172a 0%, #082f49 100%)',
-          color: '#e2e8f0',
-          padding: 64
+          alignItems: 'flex-end',
+          gap: 6,
+          fontSize: 40,
+          fontWeight: 700,
+          letterSpacing: -2
         }}
       >
-        <div style={{ fontSize: 28, letterSpacing: 1 }}>Yashwardhan Singh Tomar • Portfolio</div>
-        <div style={{ fontSize: 72, fontWeight: 700, lineHeight: 1.1, maxWidth: '86%' }}>{title}</div>
-        <div style={{ fontSize: 26, opacity: 0.85 }}>Scalable systems. Product-focused engineering.</div>
+        yst
+        <div
+          style={{
+            width: 10,
+            height: 10,
+            borderRadius: 999,
+            background: '#e8600f',
+            marginBottom: 10
+          }}
+        />
       </div>
-    ),
+      <div
+        style={{
+          display: 'flex',
+          fontSize: 76,
+          fontWeight: 600,
+          lineHeight: 1.08,
+          letterSpacing: -3,
+          maxWidth: '90%'
+        }}
+      >
+        {title}
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          fontSize: 28,
+          color: '#666666'
+        }}
+      >
+        <span>Yashwardhan Singh Tomar</span>
+        <span style={{ color: '#e8600f' }}>AI engineer · NTU Singapore</span>
+      </div>
+    </div>,
     {
       width: 1200,
       height: 630

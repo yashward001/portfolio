@@ -1,124 +1,139 @@
+import { ArrowRight, Download } from 'lucide-react';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
 
-import { SkillsSnapshot } from '@/components/sections/skills-snapshot';
-import { StatsRow } from '@/components/sections/stats-row';
-import { ParticleTextEffect } from '@/components/ui/particle-text-effect';
+import { Avatar } from '@/components/home/avatar';
+import {
+  AwardCard,
+  CollectionCard,
+  ContactCta,
+  ExperienceCard,
+  LocationCard,
+  ToolboxCard
+} from '@/components/home/bento-cards';
+import { FeaturedWorkCard } from '@/components/home/featured-work-card';
+import { PlaylistCard } from '@/components/home/playlist-card';
 import { Reveal } from '@/components/ui/reveal';
-import { SectionTitle } from '@/components/ui/section-title';
-import { TerminalProjectCard } from '@/components/ui/terminal-project-card';
 import { profile } from '@/content/profile';
-import { getFeaturedProjects } from '@/lib/content';
+import { getFeaturedProjects, getProjects } from '@/lib/content';
+import { repoUrl } from '@/lib/utils';
 
-const HERO_WORDS = [
-  'YASHWARDHAN',   // identity anchor
-  'AGENTIC AI',    // ATLAS — state machine + Playwright + Gemini
-  'LLM SYSTEMS',   // core expertise
-  'NANOEXCHANGE',  // C++20 deterministic matching engine
-  'PYTORCH',       // ML depth — STM, Gigin, quant work
-  'RAG PIPELINES', // enterprise RAG platform
-];
+const shortName = (title: string) => title.split(/ — |: | \(/)[0].trim();
 
 export default function HomePage() {
   const featured = getFeaturedProjects();
+  const featuredSlugs = new Set(featured.map((p) => p.slug));
+  const more = getProjects()
+    .filter((p) => !featuredSlugs.has(p.slug))
+    .sort((a, b) => b.sortImpact - a.sortImpact)
+    .slice(0, 4);
 
   return (
-    <div className="space-y-14">
-      {/* ── Hero ─────────────────────────────────────────────── */}
-      <section
-        id="hero"
-        className="relative overflow-hidden border border-[#003d0f] bg-black"
-      >
-        {/* Particle canvas — full bleed, no padding */}
-        <ParticleTextEffect words={HERO_WORDS} interval={3500} />
+    <div className="space-y-24">
+      {/* ── Hero ─────────────────────────────────────────────────────── */}
+      <section aria-labelledby="hero-title" className="space-y-10">
+        <h1
+          id="hero-title"
+          className="text-[clamp(2.25rem,7vw,3.6rem)] font-semibold leading-[1.12] tracking-[-0.035em]"
+        >
+          <span className="block">
+            Hi, I&apos;m <Avatar className="mx-1" /> Yashwardhan!
+          </span>
+          <span className="block">
+            <span className="text-subtle">I&apos;m an</span> AI engineer{' '}
+            <span className="text-subtle">studying</span>
+          </span>
+          <span className="flex flex-wrap items-center gap-x-5 gap-y-3">
+            <span className="text-accent">CS at NTU.</span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-[15px] font-medium tracking-normal text-fg shadow-chip">
+              <span className="relative flex h-2.5 w-2.5" aria-hidden>
+                <span className="animate-ping-soft absolute inset-0 rounded-full bg-success" />
+                <span className="relative h-2.5 w-2.5 rounded-full bg-success" />
+              </span>
+              {profile.availability}
+            </span>
+          </span>
+        </h1>
 
-        {/* Scanline overlay on the canvas area only */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px)'
-          }}
-        />
-
-        {/* Text + CTAs */}
-        <div className="relative z-10 space-y-5 border-t border-[#003d0f] p-6 sm:p-8">
-          <p className="font-mono text-[10px] uppercase tracking-[0.4em] text-[#006622]">
-            root@yst:~$ <span className="text-[#004d1a]">./profile.sh</span>
+        <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
+          <a
+            href={profile.resumeUrl}
+            className="btn-primary focus-ring self-start"
+          >
+            <Download className="h-4 w-4" aria-hidden /> Download résumé
+          </a>
+          <p className="max-w-md text-[17px] leading-snug text-fg/85">
+            I build production ML and LLM systems, most recently at Panasonic
+            Research. Explore my work and reach out&nbsp;— I&apos;d love to
+            connect.
           </p>
+        </div>
+      </section>
 
-          <p className="max-w-2xl font-mono text-sm text-white/80">
-            <span className="text-[#00aa44]"># </span>
-            {profile.valueProp}
-          </p>
+      {/* ── Bento ────────────────────────────────────────────────────── */}
+      <Reveal>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+          <ExperienceCard />
+          <PlaylistCard />
+          <CollectionCard />
+          <LocationCard />
+          <FeaturedWorkCard
+            className="sm:col-span-2"
+            items={featured.map((p) => ({
+              slug: p.slug,
+              title: p.title,
+              shortTitle: shortName(p.title),
+              summary: p.summary,
+              impact: p.impactMetric,
+              repo: repoUrl(p.links.repo)
+            }))}
+          />
+          <AwardCard className="sm:col-span-2 md:col-span-1" />
+          <ToolboxCard className="sm:col-span-2" />
+        </div>
+      </Reveal>
 
-          <div className="flex flex-wrap gap-3">
+      {/* ── More projects ───────────────────────────────────────────── */}
+      <Reveal>
+        <section aria-labelledby="more-work" className="space-y-6">
+          <div className="flex items-end justify-between gap-4">
+            <h2 id="more-work" className="text-2xl font-semibold sm:text-3xl">
+              More projects
+            </h2>
             <Link
               href="/projects"
-              className="focus-ring border border-[#00ff41] bg-transparent px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-[#00ff41] transition-all hover:bg-[#00ff41] hover:text-black hover:shadow-[0_0_20px_rgba(0,255,65,0.35)]"
+              className="focus-ring group inline-flex items-center gap-1 rounded text-sm font-medium text-muted hover:text-fg"
             >
-              /PROJECTS
-            </Link>
-            <Link
-              href="/resume"
-              className="focus-ring border border-[#003d0f] bg-transparent px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-[#006622] transition-all hover:border-[#00ff41] hover:text-[#00ff41]"
-            >
-              /RESUME
+              View all{' '}
+              <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
             </Link>
           </div>
+          <ul className="card divide-y divide-border">
+            {more.map((project) => (
+              <li key={project.slug}>
+                <Link
+                  href={`/projects/${project.slug}`}
+                  className="focus-ring group flex items-center gap-4 px-6 py-5 transition hover:bg-bg/60"
+                >
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium">{shortName(project.title)}</p>
+                    <p className="mt-0.5 line-clamp-1 text-sm text-muted">
+                      {project.summary}
+                    </p>
+                  </div>
+                  <span className="hidden text-sm text-subtle sm:block">
+                    {new Date(project.date).getFullYear()}
+                  </span>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-subtle transition group-hover:translate-x-0.5 group-hover:text-fg" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </Reveal>
 
-          <p className="font-mono text-[10px] text-[#003d0f]">
-            right-click + drag on canvas to scatter particles
-          </p>
-        </div>
-      </section>
-
-      {/* ── Stats ── */}
-      <section id="stats">
-        <Reveal>
-          <StatsRow />
-        </Reveal>
-      </section>
-
-      {/* ── Featured Projects ── */}
-      <section id="featured-projects" className="space-y-5">
-        <Reveal>
-          <SectionTitle
-            overline="Selected Work"
-            title="Featured Case Studies"
-            description="Architecture-first engineering projects."
-          />
-        </Reveal>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {featured.map((project, index) => (
-            <TerminalProjectCard
-              key={project.slug}
-              title={project.title}
-              role={project.role}
-              date={new Date(project.date).getFullYear().toString()}
-              slug={project.slug}
-              tags={project.tags}
-              stack={project.stack}
-              index={index}
-            />
-          ))}
-        </div>
-        <Reveal>
-          <Link
-            href="/projects"
-            className="focus-ring inline-flex items-center gap-2 font-mono text-xs text-[#006622] transition-colors hover:text-[#00ff41]"
-          >
-            root@yst:~$ ls /projects <ArrowRight className="h-3 w-3" />
-          </Link>
-        </Reveal>
-      </section>
-
-      {/* ── Skills ── */}
-      <section id="skills">
-        <Reveal>
-          <SkillsSnapshot />
-        </Reveal>
-      </section>
+      <Reveal>
+        <ContactCta />
+      </Reveal>
     </div>
   );
 }

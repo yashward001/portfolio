@@ -10,6 +10,9 @@ export const profileSchema = z.object({
   headline: z.string().min(8),
   valueProp: z.string().min(10),
   location: z.string().min(2),
+  coordinates: z.string(),
+  availability: z.string(),
+  avatar: z.string().optional(),
   phone: z.string().min(6),
   email: z.string().email(),
   resumeUrl: z.string(),
@@ -34,8 +37,14 @@ export const profileSchema = z.object({
       current: z.boolean().optional()
     })
   ),
-  awards: z.array(z.object({ title: z.string(), detail: z.string(), date: z.string() })).default([]),
-  leadership: z.array(z.object({ role: z.string(), org: z.string() })).default([]),
+  awards: z
+    .array(
+      z.object({ title: z.string(), detail: z.string(), date: z.string() })
+    )
+    .default([]),
+  leadership: z
+    .array(z.object({ role: z.string(), org: z.string() }))
+    .default([]),
   socials: z.array(socialSchema)
 });
 

@@ -1,65 +1,93 @@
 import type { Metadata } from 'next';
+import { ArrowUpRight, Github, Linkedin, Mail, Phone } from 'lucide-react';
 
 import { ContactForm } from '@/components/sections/contact-form';
+import { PageHeader } from '@/components/ui/page-header';
 import { profile } from '@/content/profile';
 
 export const metadata: Metadata = {
   title: 'Contact',
-  description: 'Get in touch for internships and software engineering opportunities.',
+  description:
+    'Get in touch about ML and software engineering roles or collaborations.',
   openGraph: { images: [{ url: '/api/og?title=Contact' }] }
 };
 
+const CHANNELS = [
+  {
+    label: 'Email',
+    value: profile.email,
+    href: `mailto:${profile.email}`,
+    icon: Mail,
+    external: false
+  },
+  {
+    label: 'LinkedIn',
+    value: profile.linkedin.replace(/^https?:\/\/(www\.)?/, ''),
+    href: profile.linkedin,
+    icon: Linkedin,
+    external: true
+  },
+  {
+    label: 'GitHub',
+    value: profile.github.replace(/^https?:\/\/(www\.)?/, ''),
+    href: profile.github,
+    icon: Github,
+    external: true
+  },
+  {
+    label: 'Phone',
+    value: profile.phone,
+    href: `tel:${profile.phone.replace(/\s+/g, '')}`,
+    icon: Phone,
+    external: false
+  }
+];
+
 export default function ContactPage() {
   return (
-    <section className="mx-auto grid max-w-5xl gap-8 lg:grid-cols-[1fr_1.2fr]">
-      {/* Info panel */}
-      <div className="space-y-5">
-        {/* Terminal page header */}
-        <div className="border-b border-[#003d0f] pb-3">
-          <p className="font-mono text-xs text-[#006622]">
-            <span className="text-[#00ff41]">root@yst</span>
-            <span className="text-[#006622]">:~$</span>
-            {' '}./contact.sh
-          </p>
-        </div>
+    <div className="space-y-12">
+      <PageHeader
+        label="Contact"
+        title={
+          <>
+            Let&apos;s <span className="text-accent">talk.</span>
+          </>
+        }
+      >
+        Open to ML and software engineering roles, research collaborations, or
+        just a good conversation about AI systems. Email is the fastest way to
+        reach me.
+      </PageHeader>
 
-        <h1 className="font-mono text-xl font-bold uppercase tracking-wide text-white">
-          Contact
-        </h1>
-
-        <p className="font-mono text-xs text-white/70">
-          For internship or collaboration opportunities, use the form or reach out directly.
-        </p>
-
-        <ul className="space-y-2 font-mono text-xs">
-          <li>
-            <span className="text-[#004d1a]">PHONE: </span>
-            <a href={`tel:${profile.phone.replace(/\s+/g, '')}`} className="text-[#33ff66] hover:text-[#00ff41]">
-              {profile.phone}
-            </a>
-          </li>
-          <li>
-            <span className="text-[#004d1a]">EMAIL: </span>
-            <a href={`mailto:${profile.email}`} className="text-[#33ff66] hover:text-[#00ff41]">
-              {profile.email}
-            </a>
-          </li>
-          <li>
-            <span className="text-[#004d1a]">GH:    </span>
-            <a href={profile.github} className="text-[#33ff66] hover:text-[#00ff41]" target="_blank" rel="noreferrer">
-              {profile.github.replace('https://', '')}
-            </a>
-          </li>
-          <li>
-            <span className="text-[#004d1a]">LI:    </span>
-            <a href={profile.linkedin} className="text-[#33ff66] hover:text-[#00ff41]" target="_blank" rel="noreferrer">
-              {profile.linkedin.replace('https://', '')}
-            </a>
-          </li>
+      <div className="grid gap-4 lg:grid-cols-[1fr_1.25fr]">
+        <ul className="card divide-y divide-border self-start">
+          {CHANNELS.map(({ label, value, href, icon: Icon, external }) => (
+            <li key={label}>
+              <a
+                href={href}
+                {...(external ? { target: '_blank', rel: 'noreferrer' } : {})}
+                className="focus-ring group flex items-center gap-4 px-5 py-4 transition hover:bg-bg/60"
+              >
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-bg text-fg">
+                  <Icon className="h-[18px] w-[18px]" aria-hidden />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-xs text-subtle">{label}</span>
+                  <span className="block truncate text-[15px] font-medium">
+                    {value}
+                  </span>
+                </span>
+                <ArrowUpRight
+                  className="h-4 w-4 shrink-0 text-subtle transition group-hover:text-fg"
+                  aria-hidden
+                />
+              </a>
+            </li>
+          ))}
         </ul>
-      </div>
 
-      <ContactForm />
-    </section>
+        <ContactForm email={profile.email} />
+      </div>
+    </div>
   );
 }

@@ -1,164 +1,122 @@
 'use client';
 
-import { AnimatePresence, motion } from 'framer-motion';
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { useMemo, useState } from 'react';
 
-import { TerminalProjectCard } from '@/components/ui/terminal-project-card';
+import { ProjectCard } from '@/components/sections/project-card';
 import type { Project } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
-type SortBy = 'recency' | 'impact';
-
-/** Strip leading ls, --tag=, whitespace from raw input → bare query */
-function parseQuery(raw: string): string {
-  return raw
-    .replace(/^ls\s+/i, '')
-    .replace(/^--tag=/i, '')
-    .trim()
-    .toLowerCase();
-}
-
-/** Derive hint text + colour from the current state */
-function getHint(
-  raw: string,
-  query: string,
-  matched: boolean,
-  allTags: string[],
-): { text: string; colour: string } {
-  const isHelp = query === '--help' || query === '-h';
-  if (!raw) return { text: '↑ type a tag, press tab to complete', colour: '#2d5a2d' };
-  if (isHelp) return { text: allTags.join(' · '), colour: '#2d5a2d' };
-  if (!query) return { text: '↑ type a tag, press tab to complete', colour: '#2d5a2d' };
-  if (matched) return { text: `--tag=${query}  ✓`, colour: '#2d5a2d' };
-  return { text: `unknown tag "${query}" — try --help`, colour: '#4a1a1a' };
-}
+type SortBy = 'recent' | 'impact';
 
 export const ProjectsGrid = ({ projects }: { projects: Project[] }) => {
-  const [filterQuery, setFilterQuery] = useState('');
-  const [sortBy, setSortBy]           = useState<SortBy>('recency');
-  const inputRef                      = useRef<HTMLInputElement>(null);
+  const [tag, setTag] = useState<string | null>(null);
+  const [sortBy, setSortBy] = useState<SortBy>('recent');
+  const reduceMotion = useReducedMotion();
 
-  const allTags = useMemo(
-    () => [...new Set(projects.flatMap((p) => p.tags))],
-    [projects],
-  );
+  // Most common tags first; only show tags used by 2+ projects so the bar stays short.
+  const tags = useMemo(() => {
+    const counts = new Map<string, number>();
+    projects.forEach((p) =>
+      p.tags.forEach((t) => counts.set(t, (counts.get(t) ?? 0) + 1))
+    );
+    return [...counts.entries()]
+      .filter(([, n]) => n > 1)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 8)
+      .map(([t]) => t);
+  }, [projects]);
 
-  const query = parseQuery(filterQuery);
-  const isHelp = query === '--help' || query === '-h';
-
-  const filtered = useMemo(() => {
-    const base = isHelp || !query
-      ? projects
-      : projects.filter((p) =>
-          p.tags.some((t) => t.toLowerCase().includes(query)),
-        );
+  const visible = useMemo(() => {
+    const base = tag ? projects.filter((p) => p.tags.includes(tag)) : projects;
     return [...base].sort((a, b) =>
       sortBy === 'impact'
         ? b.sortImpact - a.sortImpact
-        : new Date(b.date).getTime() - new Date(a.date).getTime(),
+        : new Date(b.date).getTime() - new Date(a.date).getTime()
     );
-  }, [query, isHelp, projects, sortBy]);
+  }, [projects, tag, sortBy]);
 
-  const hasMatch = !query || isHelp || filtered.length > 0;
-
-  const hint = getHint(filterQuery, query, hasMatch, allTags);
-
-  const onKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        setFilterQuery('');
-        return;
-      }
-      if (e.key === 'Tab') {
-        e.preventDefault();
-        if (!query) return;
-        const match = allTags.find((t) => t.toLowerCase().startsWith(query));
-        if (match) setFilterQuery(match);
-      }
-    },
-    [query, allTags],
-  );
+  const pill = (active: boolean) =>
+    cn(
+      'focus-ring whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm transition',
+      active
+        ? 'bg-fg text-white'
+        : 'bg-card text-muted shadow-chip hover:text-fg'
+    );
 
   return (
     <div className="space-y-6">
-      {/* Filter / sort toolbar */}
-      <div className="border border-[#003d0f] bg-[#0a0f0a] p-3">
-        <p className="mb-2 font-mono text-[10px] text-[#006622]">
-          root@yst:~/projects$ ls -la --filter
-        </p>
-
-        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-          {/* Shell input */}
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-[11px] shrink-0">
-                <span className="text-[#00ff41]">root@yst</span>
-                <span className="text-[#4a6741]">:~/projects$</span>
-              </span>
-              <input
-                ref={inputRef}
-                type="text"
-                spellCheck={false}
-                autoComplete="off"
-                placeholder="ls --tag=agentic-ai  (or --help)"
-                value={filterQuery}
-                onChange={(e) => setFilterQuery(e.target.value)}
-                onKeyDown={onKeyDown}
-                className="bg-transparent border-none outline-none font-mono text-[11px] text-[#00ff41] caret-[#00ff41] placeholder:text-[#1a3a1a] w-full tracking-wide"
-              />
-            </div>
-            <p
-              className="mt-1 font-mono text-[9px] min-h-[14px] pl-[calc(7ch+0.5rem)] leading-none"
-              style={{ color: hint.colour }}
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div
+          role="group"
+          aria-label="Filter by topic"
+          className="flex flex-wrap gap-2"
+        >
+          <button
+            type="button"
+            aria-pressed={tag === null}
+            onClick={() => setTag(null)}
+            className={pill(tag === null)}
+          >
+            All
+          </button>
+          {tags.map((t) => (
+            <button
+              key={t}
+              type="button"
+              aria-pressed={tag === t}
+              onClick={() => setTag(t)}
+              className={pill(tag === t)}
             >
-              {hint.text}
-            </p>
-          </div>
+              {t}
+            </button>
+          ))}
+        </div>
 
-          {/* Sort controls */}
-          <div className="flex items-center gap-2 font-mono text-[10px] text-[#006622] shrink-0 md:pt-0.5">
-            <span className="text-[#004d1a]">--sort=</span>
-            {(['recency', 'impact'] as SortBy[]).map((s) => (
-              <button
-                key={s}
-                type="button"
-                onClick={() => setSortBy(s)}
-                className={`focus-ring px-2 py-1 transition-colors ${
-                  sortBy === s ? 'text-[#00ff41]' : 'text-[#006622] hover:text-[#33ff66]'
-                }`}
-              >
-                {s}
-              </button>
-            ))}
-          </div>
+        <div
+          role="group"
+          aria-label="Sort"
+          className="flex shrink-0 rounded-full bg-card p-1 shadow-chip"
+        >
+          {(['recent', 'impact'] as SortBy[]).map((s) => (
+            <button
+              key={s}
+              type="button"
+              aria-pressed={sortBy === s}
+              onClick={() => setSortBy(s)}
+              className={cn(
+                'focus-ring rounded-full px-3 py-1 text-sm capitalize transition',
+                sortBy === s
+                  ? 'bg-bg font-medium text-fg'
+                  : 'text-muted hover:text-fg'
+              )}
+            >
+              {s}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Cards grid — hidden when --help is active */}
-      {!isHelp && (
-        <motion.div layout className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-          <AnimatePresence mode="popLayout">
-            {filtered.map((project, i) => (
-              <motion.div
-                key={project.slug}
-                layout
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.18 }}
-              >
-                <TerminalProjectCard
-                  title={project.title}
-                  role={project.role}
-                  date={new Date(project.date).getFullYear().toString()}
-                  slug={project.slug}
-                  tags={project.tags}
-                  stack={project.stack}
-                  index={i}
-                />
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
-      )}
+      <p className="sr-only" aria-live="polite">
+        {visible.length} projects shown
+      </p>
+
+      <motion.ul layout={!reduceMotion} className="grid gap-4 md:grid-cols-2">
+        <AnimatePresence mode="popLayout" initial={false}>
+          {visible.map((project) => (
+            <motion.li
+              key={project.slug}
+              layout={!reduceMotion}
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ProjectCard project={project} />
+            </motion.li>
+          ))}
+        </AnimatePresence>
+      </motion.ul>
     </div>
   );
 };

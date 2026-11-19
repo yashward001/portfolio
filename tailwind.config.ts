@@ -1,52 +1,51 @@
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  darkMode: ['class'],
-  content: ['./app/**/*.{ts,tsx,mdx}', './components/**/*.{ts,tsx,mdx}', './content/**/*.{md,mdx}'],
+  content: [
+    './app/**/*.{ts,tsx,mdx}',
+    './components/**/*.{ts,tsx,mdx}',
+    './content/**/*.{md,mdx}'
+  ],
   theme: {
     extend: {
       container: {
         center: true,
-        padding: '1.25rem',
+        padding: '1rem',
         screens: {
-          '2xl': '1180px'
+          '2xl': '920px'
         }
       },
       fontFamily: {
-        /* Everything is JetBrains Mono */
-        sans:    ['var(--font-mono)', 'JetBrains Mono', 'Fira Code', 'monospace'],
-        display: ['var(--font-mono)', 'JetBrains Mono', 'Fira Code', 'monospace'],
-        mono:    ['var(--font-mono)', 'JetBrains Mono', 'Fira Code', 'monospace']
+        sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        display: [
+          'var(--font-sans)',
+          'ui-sans-serif',
+          'system-ui',
+          'sans-serif'
+        ],
+        mono: [
+          'var(--font-mono)',
+          'ui-monospace',
+          'SFMono-Regular',
+          'monospace'
+        ]
       },
       colors: {
-        bg:      'hsl(var(--bg))',
-        fg:      'hsl(var(--fg))',
-        muted:   'hsl(var(--muted))',
-        border:  'hsl(var(--border))',
-        card:    'hsl(var(--card))',
-        accent:  'hsl(var(--accent))',
-        success: 'hsl(var(--success))'
+        bg: 'hsl(var(--bg) / <alpha-value>)',
+        fg: 'hsl(var(--fg) / <alpha-value>)',
+        muted: 'hsl(var(--muted) / <alpha-value>)',
+        subtle: 'hsl(var(--subtle) / <alpha-value>)',
+        border: 'hsl(var(--border) / <alpha-value>)',
+        card: 'hsl(var(--card) / <alpha-value>)',
+        accent: 'hsl(var(--accent) / <alpha-value>)',
+        success: 'hsl(var(--success) / <alpha-value>)'
       },
-      keyframes: {
-        blink: {
-          '0%, 100%': { opacity: '1' },
-          '50%':       { opacity: '0' }
-        },
-        'crt-flicker': {
-          '0%, 94%, 100%': { opacity: '1' },
-          '95%':            { opacity: '0.97' },
-          '97%':            { opacity: '0.95' },
-          '98%':            { opacity: '0.98' }
-        },
-        'type-cursor': {
-          '0%, 100%': { borderRightColor: '#00ff41' },
-          '50%':       { borderRightColor: 'transparent' }
-        }
+      borderRadius: {
+        card: '1.75rem'
       },
-      animation: {
-        blink:       'blink 1s step-end infinite',
-        flicker:     'crt-flicker 8s infinite',
-        'type-cursor': 'type-cursor 0.75s step-end infinite'
+      boxShadow: {
+        card: '0 1px 2px rgba(17,17,17,0.04), 0 12px 32px -16px rgba(17,17,17,0.12)',
+        chip: '0 1px 2px rgba(17,17,17,0.06), 0 4px 12px -4px rgba(17,17,17,0.10)'
       }
     }
   },

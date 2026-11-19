@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { ArrowLeft, ArrowUpRight, Clock3, Github } from 'lucide-react';
+import { ArrowLeft, ArrowUpRight, Github } from 'lucide-react';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -7,14 +7,17 @@ import rehypeHighlight from 'rehype-highlight';
 import remarkGfm from 'remark-gfm';
 
 import { mdxComponents } from '@/components/mdx/mdx-components';
-import { ProjectGallery } from '@/components/sections/project-gallery';
-import { Badge } from '@/components/ui/badge';
 import { getProjectBySlug, getProjects } from '@/lib/content';
-import { formatDate } from '@/lib/utils';
+import { formatDate, repoUrl } from '@/lib/utils';
 
-export const generateStaticParams = async () => getProjects().map((project) => ({ slug: project.slug }));
+export const generateStaticParams = async () =>
+  getProjects().map((project) => ({ slug: project.slug }));
 
-export const generateMetadata = async ({ params }: { params: { slug: string } }): Promise<Metadata> => {
+export const generateMetadata = async ({
+  params
+}: {
+  params: { slug: string };
+}): Promise<Metadata> => {
   const project = getProjectBySlug(params.slug);
   if (!project) return {};
 
@@ -27,85 +30,83 @@ export const generateMetadata = async ({ params }: { params: { slug: string } })
   };
 };
 
-export default function ProjectDetailPage({ params }: { params: { slug: string } }) {
+export default function ProjectDetailPage({
+  params
+}: {
+  params: { slug: string };
+}) {
   const project = getProjectBySlug(params.slug);
-
   if (!project) notFound();
 
+  const live = project.links.live ?? project.links.demo;
+  const repo = repoUrl(project.links.repo);
+
   return (
-    <article className="mx-auto max-w-4xl space-y-8">
-      {/* Back link */}
-      <Link href="/projects" className="focus-ring inline-flex items-center gap-2 font-mono text-xs text-[#006622] transition-colors hover:text-[#00ff41]">
-        <ArrowLeft className="h-3 w-3" /> cd ../projects
+    <article className="mx-auto max-w-[720px]">
+      <Link
+        href="/projects"
+        className="focus-ring group inline-flex items-center gap-1.5 rounded text-sm text-muted hover:text-fg"
+      >
+        <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-0.5" />{' '}
+        All projects
       </Link>
 
-      {/* Terminal page header */}
-      <div className="border-b border-[#003d0f] pb-3">
-        <p className="font-mono text-xs text-[#006622]">
-          <span className="text-[#00ff41]">root@yst</span>
-          <span className="text-[#006622]">:~/projects$</span>
-          {' '}cat {project.slug}.md
+      <header className="mt-8 space-y-5">
+        <p className="text-sm text-subtle">
+          {project.role} · {formatDate(project.date)} · {project.readingMinutes}{' '}
+          min read
         </p>
-      </div>
-
-      <ProjectGallery project={project} />
-
-      <header className="space-y-4">
-        <h1 className="font-mono text-3xl font-bold uppercase tracking-wide text-[#00ff41]"
-          style={{ textShadow: '0 0 16px rgba(0,255,65,0.4)' }}>
+        <h1 className="text-[clamp(2rem,5vw,2.75rem)] font-semibold leading-[1.1] tracking-[-0.03em]">
           {project.title}
         </h1>
-        <p className="font-mono text-sm text-white/75">{project.summary}</p>
+        <p className="text-lg leading-relaxed text-muted">{project.summary}</p>
 
-        <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] text-[#00aa44]">
-          <span>ROLE: {project.role}</span>
-          <span className="text-[#003d0f]">|</span>
-          <span>{formatDate(project.date)}</span>
-          <span className="text-[#003d0f]">|</span>
-          <span className="inline-flex items-center gap-1">
-            <Clock3 className="h-3 w-3" /> {project.readingMinutes} min read
-          </span>
-        </div>
-
-        <div className="flex flex-wrap gap-1.5">
-          {project.tags.map((tag) => (
-            <Badge key={tag}>{tag}</Badge>
-          ))}
-        </div>
-
-        <div className="border border-[#003d0f] bg-[#0a0f0a] px-3 py-2">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">IMPACT: </span>
-          <span className="font-mono text-xs text-[#33ff66]">{project.impactMetric}</span>
-        </div>
-
-        <div className="flex gap-4">
-          {project.links.repo && (
-            <a href={project.links.repo} className="focus-ring inline-flex items-center gap-1 font-mono text-xs text-[#33ff66] transition-colors hover:text-[#00ff41]" target="_blank" rel="noreferrer">
-              <Github className="h-3 w-3" /> [REPOSITORY]
-            </a>
-          )}
-          {(project.links.live || project.links.demo) && (
-            <a href={project.links.live ?? project.links.demo ?? '#'} className="focus-ring inline-flex items-center gap-1 font-mono text-xs text-[#33ff66] transition-colors hover:text-[#00ff41]" target="_blank" rel="noreferrer">
-              <ArrowUpRight className="h-3 w-3" /> [LIVE DEMO]
-            </a>
-          )}
-        </div>
+        {(repo || live) && (
+          <div className="flex flex-wrap gap-3 pt-1">
+            {repo && (
+              <a
+                href={repo}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-primary focus-ring"
+              >
+                <Github className="h-4 w-4" /> View code
+              </a>
+            )}
+            {live && (
+              <a
+                href={live}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-secondary focus-ring"
+              >
+                Live demo <ArrowUpRight className="h-4 w-4" />
+              </a>
+            )}
+          </div>
+        )}
       </header>
 
-      <section className="grid gap-3 md:grid-cols-3">
-        {[
-          { label: 'ARCHITECTURE', body: 'System design, data flow, and implementation details documented below.' },
-          { label: 'TRADEOFFS',    body: 'Key technical choices and constraints explicitly captured in each section.' },
-          { label: 'IMPACT',       body: project.impactMetric }
-        ].map(({ label, body }) => (
-          <div key={label} className="border border-[#003d0f] bg-[#0a0f0a] p-3">
-            <p className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">{label}</p>
-            <p className="mt-1.5 font-mono text-xs text-[#33ff66]">{body}</p>
-          </div>
-        ))}
-      </section>
+      <div className="card mt-10 grid gap-6 p-6 sm:grid-cols-[1fr_1.2fr]">
+        <div>
+          <p className="text-xs font-medium text-subtle">Impact</p>
+          <p className="mt-1.5 text-[15px] font-medium leading-snug">
+            {project.impactMetric}
+          </p>
+        </div>
+        <div>
+          <p className="text-xs font-medium text-subtle">Stack</p>
+          <ul className="mt-2 flex flex-wrap gap-1.5">
+            {project.stack.map((item) => (
+              <li key={item} className="chip">
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
 
-      <div className="prose">
+      <div className="prose mt-6">
         <MDXRemote
           source={project.content}
           components={mdxComponents}
@@ -116,6 +117,16 @@ export default function ProjectDetailPage({ params }: { params: { slug: string }
             }
           }}
         />
+      </div>
+
+      <div className="mt-16 border-t border-border pt-8">
+        <Link
+          href="/projects"
+          className="focus-ring group inline-flex items-center gap-1.5 rounded font-medium hover:text-accent"
+        >
+          <ArrowLeft className="h-4 w-4 transition group-hover:-translate-x-0.5" />{' '}
+          Back to all projects
+        </Link>
       </div>
     </article>
   );

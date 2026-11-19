@@ -1,13 +1,35 @@
 'use client';
 
-export default function GlobalError({ error, reset }: { error: Error; reset: () => void }) {
+export default function GlobalError({
+  reset
+}: {
+  error: Error;
+  reset: () => void;
+}) {
   return (
     <html lang="en">
-      <body className="bg-bg p-8 text-fg">
-        <h1 className="font-display text-3xl">Application error</h1>
-        <p className="mt-3 text-muted">{error.message}</p>
-        <button type="button" className="focus-ring mt-4 rounded-lg border border-border px-4 py-2" onClick={reset}>
-          Retry
+      <body
+        style={{
+          fontFamily: 'system-ui, sans-serif',
+          background: '#f5f5f3',
+          color: '#121212',
+          padding: 48
+        }}
+      >
+        <h1 style={{ fontSize: 28, fontWeight: 600 }}>Something went wrong</h1>
+        <button
+          type="button"
+          onClick={reset}
+          style={{
+            marginTop: 16,
+            padding: '12px 22px',
+            borderRadius: 999,
+            background: '#121212',
+            color: '#fff',
+            border: 0
+          }}
+        >
+          Try again
         </button>
       </body>
     </html>

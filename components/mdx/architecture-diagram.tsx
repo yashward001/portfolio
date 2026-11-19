@@ -6,23 +6,62 @@ const labels: Record<Variant, string[]> = {
   product: ['SDK/API', 'Ingestion', 'Query Layer', 'Dashboard']
 };
 
-export const ArchitectureDiagram = ({ title, variant }: { title: string; variant: Variant }) => {
+export const ArchitectureDiagram = ({
+  title,
+  variant
+}: {
+  title: string;
+  variant: Variant;
+}) => {
   const nodes = labels[variant];
 
   return (
-    <figure className="my-8 overflow-hidden rounded-xl border border-border bg-card p-4">
-      <figcaption className="mb-3 text-sm font-medium text-muted">{title}</figcaption>
-      <svg viewBox="0 0 760 160" role="img" aria-label={title} className="w-full">
+    <figure className="card not-prose my-8 p-5">
+      <figcaption className="mb-4 text-xs font-medium text-subtle">
+        {title}
+      </figcaption>
+      <svg
+        viewBox="0 0 760 120"
+        role="img"
+        aria-label={`${title}: ${nodes.join(' → ')}`}
+        className="w-full"
+      >
         {nodes.map((node, index) => {
-          const x = 20 + index * 185;
+          const x = 10 + index * 190;
           return (
             <g key={node}>
-              <rect x={x} y="40" width="160" height="70" rx="12" fill="hsl(var(--bg))" stroke="hsl(var(--border))" />
-              <text x={x + 80} y="80" textAnchor="middle" fill="hsl(var(--fg))" fontSize="14" fontFamily="ui-monospace">
+              <rect
+                x={x}
+                y="25"
+                width="160"
+                height="70"
+                rx="18"
+                fill="hsl(var(--bg))"
+                stroke="hsl(var(--border))"
+              />
+              <text
+                x={x + 80}
+                y="65"
+                textAnchor="middle"
+                fill="hsl(var(--fg))"
+                fontSize="15"
+                fontWeight="500"
+                fontFamily="var(--font-sans)"
+              >
                 {node}
               </text>
               {index < nodes.length - 1 ? (
-                <line x1={x + 160} y1="75" x2={x + 185} y2="75" stroke="hsl(var(--accent))" strokeWidth="2" />
+                <g
+                  stroke="hsl(var(--accent))"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                >
+                  <line x1={x + 166} y1="60" x2={x + 184} y2="60" />
+                  <polyline
+                    points={`${x + 179},55 ${x + 184},60 ${x + 179},65`}
+                    fill="none"
+                  />
+                </g>
               ) : null}
             </g>
           );

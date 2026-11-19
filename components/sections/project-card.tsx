@@ -1,86 +1,59 @@
+import { ArrowUpRight, Github } from 'lucide-react';
 import Link from 'next/link';
 
-import { SpotlightCard } from '@/components/ui/spotlight-card';
 import type { Project } from '@/lib/types';
-import { formatDate } from '@/lib/utils';
+import { repoUrl } from '@/lib/utils';
 
 export const ProjectCard = ({ project }: { project: Project }) => {
+  const repo = repoUrl(project.links.repo);
   return (
-    <SpotlightCard as="article" className="group flex h-full flex-col border border-[#003d0f] transition-all duration-200 hover:border-[#00ff41] hover:shadow-[0_0_20px_rgba(0,255,65,0.12)]">
-      {/* Terminal title bar */}
-      <div className="flex items-center justify-between border-b border-[#003d0f] px-3 py-2 group-hover:border-[#00ff41]/40">
-        <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#006622]">
-          ── [PROJECT] ──────────────────────
-        </span>
-        <span className="font-mono text-[10px] text-[#003d0f]">{formatDate(project.date)}</span>
+    <article className="card group flex h-full flex-col p-6 transition hover:-translate-y-0.5 hover:shadow-[0_1px_2px_rgba(17,17,17,0.04),0_20px_40px_-20px_rgba(17,17,17,0.22)]">
+      <div className="flex items-center justify-between gap-3 text-xs text-subtle">
+        <span className="truncate">{project.role}</span>
+        <span className="shrink-0">{new Date(project.date).getFullYear()}</span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        {/* Role badge */}
-        <span className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">
-          ROLE: {project.role}
+      <h3 className="mt-3 text-lg font-semibold leading-snug">
+        <Link
+          href={`/projects/${project.slug}`}
+          className="focus-ring rounded after:absolute after:inset-0"
+        >
+          {project.title}
+        </Link>
+      </h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted">
+        {project.summary}
+      </p>
+
+      <p className="mt-4 rounded-2xl bg-accent/[0.07] px-3.5 py-2.5 text-[13px] leading-snug text-fg/85">
+        <span className="font-medium text-accent">Impact · </span>
+        {project.impactMetric}
+      </p>
+
+      <ul className="mt-4 flex flex-wrap gap-1.5">
+        {project.stack.slice(0, 5).map((item) => (
+          <li key={item} className="chip">
+            {item}
+          </li>
+        ))}
+      </ul>
+
+      <div className="mt-auto flex items-center justify-between pt-5 text-sm">
+        <span className="inline-flex items-center gap-1 font-medium transition group-hover:text-accent">
+          Case study <ArrowUpRight className="h-4 w-4" />
         </span>
-
-        {/* Title */}
-        <h3 className="font-mono text-base font-bold uppercase tracking-wide text-[#00ff41] leading-tight">
-          &gt; {project.title}
-        </h3>
-
-        {/* Summary */}
-        <p className="font-mono text-xs text-[#33ff66] leading-relaxed">{project.summary}</p>
-
-        {/* Impact metric */}
-        <div className="border border-[#003d0f] bg-black/50 px-3 py-2">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-[#006622]">IMPACT: </span>
-          <span className="font-mono text-xs text-[#33ff66]">{project.impactMetric}</span>
-        </div>
-
-        {/* Stack */}
-        <p className="font-mono text-[10px] text-[#006622]">
-          <span className="text-[#004d1a]">STACK: </span>
-          {project.stack.slice(0, 5).join(' · ')}
-        </p>
-
-        {/* Tags */}
-        <div className="flex flex-wrap gap-1.5">
-          {project.tags.slice(0, 4).map((tag) => (
-            <span
-              key={tag}
-              className="border border-[#003d0f] px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider text-[#006622]"
-            >
-              [{tag}]
-            </span>
-          ))}
-          {project.tags.length > 4 && (
-            <span className="border border-[#003d0f] px-1.5 py-0.5 font-mono text-[10px] text-[#004d1a]">
-              +{project.tags.length - 4}
-            </span>
-          )}
-        </div>
-
-        {/* Footer links */}
-        <div className="mt-auto flex items-center justify-between pt-2">
-          <Link
-            href={`/projects/${project.slug}`}
-            className="focus-ring font-mono text-xs text-[#33ff66] transition-colors hover:text-[#00ff41] hover:[text-shadow:0_0_6px_#00ff41]"
+        {repo && (
+          <a
+            href={repo}
+            target="_blank"
+            rel="noreferrer"
+            aria-label={`${project.title} source code on GitHub`}
+            className="focus-ring relative z-10 grid h-8 w-8 place-items-center rounded-full text-muted transition hover:bg-bg hover:text-fg"
           >
-            [OPEN CASE STUDY ▶]
-          </Link>
-          <div className="flex items-center gap-2">
-            {project.links.repo && (
-              <a
-                href={project.links.repo}
-                className="focus-ring font-mono text-[10px] text-[#006622] transition-colors hover:text-[#00ff41]"
-                aria-label="GitHub repository"
-                target="_blank"
-                rel="noreferrer"
-              >
-                [GH]
-              </a>
-            )}
-          </div>
-        </div>
+            <Github className="h-4 w-4" />
+          </a>
+        )}
       </div>
-    </SpotlightCard>
+    </article>
   );
 };

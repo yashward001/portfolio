@@ -16,9 +16,9 @@ const getAccessToken = async (): Promise<string> => {
       'Content-Type': 'application/x-www-form-urlencoded',
       Authorization: `Basic ${Buffer.from(
         `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
-      ).toString('base64')}`,
+      ).toString('base64')}`
     },
-    body: 'grant_type=client_credentials',
+    body: 'grant_type=client_credentials'
   });
   const data = await res.json();
   if (!data.access_token) throw new Error('No access token returned');
@@ -39,8 +39,11 @@ export async function GET() {
     const token = await getAccessToken();
 
     const res = await fetch(
-      `https://api.spotify.com/v1/playlists/${playlistId}?fields=name,description,followers,images,tracks.total,external_urls`,
-      { headers: { Authorization: `Bearer ${token}` }, next: { revalidate: 3600 } }
+      `https://api.spotify.com/v1/playlists/${playlistId}?fields=name,description,followers,images,external_urls,tracks(total,items(track(album(images))))`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+        next: { revalidate: 3600 }
+      }
     );
     const playlist = await res.json();
 
@@ -51,6 +54,17 @@ export async function GET() {
       totalTracks: playlist.tracks?.total ?? 0,
       coverImage: playlist.images?.[0]?.url ?? null,
       spotifyUrl: playlist.external_urls?.spotify ?? null,
+      trackCovers: [
+        ...new Set<string>(
+          (playlist.tracks?.items ?? [])
+            .map(
+              (item: { track?: { album?: { images?: { url: string }[] } } }) =>
+                item.track?.album?.images?.[1]?.url ??
+                item.track?.album?.images?.[0]?.url
+            )
+            .filter(Boolean)
+        )
+      ].slice(0, 2)
     });
   } catch {
     return Response.json({ error: 'fetch_failed' }, { status: 500 });
