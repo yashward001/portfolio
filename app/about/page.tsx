@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
 import { CollectionCard, ContactCta } from '@/components/home/bento-cards';
+import { NowBuildingCard } from '@/components/home/now-building-card';
 import { PlaylistCard } from '@/components/home/playlist-card';
 import { PageHeader } from '@/components/ui/page-header';
 import { Reveal } from '@/components/ui/reveal';
@@ -73,6 +74,8 @@ export default function AboutPage() {
           ))}
         </dl>
       </Reveal>
+
+      <NowBuildingCard />
 
       <section aria-labelledby="experience">
         <Reveal>

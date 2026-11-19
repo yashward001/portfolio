@@ -45,6 +45,19 @@ export const profileSchema = z.object({
   leadership: z
     .array(z.object({ role: z.string(), org: z.string() }))
     .default([]),
+  venture: z
+    .object({
+      name: z.string(),
+      slug: z.string(),
+      role: z.string(),
+      cofounder: z.string(),
+      tagline: z.string(),
+      summary: z.string(),
+      status: z.string(),
+      pitchUrl: z.string().url(),
+      deckUrl: z.string().url()
+    })
+    .optional(),
   socials: z.array(socialSchema)
 });
 
@@ -62,7 +75,9 @@ export const projectFrontmatterSchema = z.object({
   links: z.object({
     repo: z.string().url().optional(),
     live: z.string().url().optional(),
-    demo: z.string().url().optional()
+    demo: z.string().url().optional(),
+    pitch: z.string().url().optional(),
+    deck: z.string().url().optional()
   }),
   sortImpact: z.number().int().min(1).max(100)
 });

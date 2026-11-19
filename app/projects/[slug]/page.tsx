@@ -40,6 +40,7 @@ export default function ProjectDetailPage({
 
   const live = project.links.live ?? project.links.demo;
   const repo = repoUrl(project.links.repo);
+  const { pitch, deck } = project.links;
 
   return (
     <article className="mx-auto max-w-[720px]">
@@ -61,8 +62,28 @@ export default function ProjectDetailPage({
         </h1>
         <p className="text-lg leading-relaxed text-muted">{project.summary}</p>
 
-        {(repo || live) && (
+        {(repo || live || pitch || deck) && (
           <div className="flex flex-wrap gap-3 pt-1">
+            {pitch && (
+              <a
+                href={pitch}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-primary focus-ring"
+              >
+                Read the pitch <ArrowUpRight className="h-4 w-4" />
+              </a>
+            )}
+            {deck && (
+              <a
+                href={deck}
+                target="_blank"
+                rel="noreferrer"
+                className="btn-secondary focus-ring"
+              >
+                Investor deck <ArrowUpRight className="h-4 w-4" />
+              </a>
+            )}
             {repo && (
               <a
                 href={repo}

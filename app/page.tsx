@@ -11,6 +11,7 @@ import {
   ToolboxCard
 } from '@/components/home/bento-cards';
 import { FeaturedWorkCard } from '@/components/home/featured-work-card';
+import { NowBuildingCard } from '@/components/home/now-building-card';
 import { PlaylistCard } from '@/components/home/playlist-card';
 import { TokenHeadline } from '@/components/home/token-headline';
 import { Reveal } from '@/components/ui/reveal';
@@ -24,7 +25,9 @@ export default function HomePage() {
   const featured = getFeaturedProjects();
   const featuredSlugs = new Set(featured.map((p) => p.slug));
   const more = getProjects()
-    .filter((p) => !featuredSlugs.has(p.slug))
+    .filter(
+      (p) => !featuredSlugs.has(p.slug) && p.slug !== profile.venture?.slug
+    )
     .sort((a, b) => b.sortImpact - a.sortImpact)
     .slice(0, 4);
 
@@ -43,11 +46,13 @@ export default function HomePage() {
           </a>
           <p className="max-w-md text-[17px] leading-snug text-fg/85">
             I build production ML and LLM systems, most recently at Panasonic
-            Research. Explore my work and reach out&nbsp;— I&apos;d love to
-            connect.
+            Research, and I&apos;m co-founding {profile.venture?.name}. Explore
+            my work and reach out&nbsp;— I&apos;d love to connect.
           </p>
         </div>
       </section>
+
+      <NowBuildingCard />
 
       {/* ── Bento ────────────────────────────────────────────────────── */}
       <AttentionField className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">

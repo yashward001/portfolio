@@ -1,0 +1,75 @@
+---
+title: "Soft Launch"
+slug: "soft-launch"
+summary: "Co-founding a dating app for 18 to 25 year olds in Delhi NCR that ends in a booked table, not another chat thread. One guaranteed match a week, and revenue only when real dates happen."
+role: "Co-founder"
+date: "2026-07-15"
+tags:
+  - Startup
+  - Full Stack
+  - Mobile
+  - Marketplaces
+stack:
+  - React Native
+  - Expo
+  - TypeScript
+  - Supabase
+  - PostgreSQL
+  - Next.js
+impactMetric: "Working prototype of the full loop: swipe, match, venue proposal, accepted booking, synced live over Supabase Realtime"
+featured: false
+cover: "/images/project-shipyard.svg"
+links:
+  pitch: "https://soft-launch-pitch.vercel.app"
+  deck: "https://soft-launch-deck.vercel.app"
+sortImpact: 99
+---
+
+## Problem
+
+Dating apps work well for a small group of the most attractive profiles. Most likes and matches go to them, and everyone else swipes for weeks and hears nothing back. The apps then sell boosts, super likes and "see who liked you" to exactly the people the product isn't working for.
+
+The deeper issue is the incentive. A subscription dating app earns most when you stay single and keep paying. A couple that meets and deletes the app is lost revenue.
+
+## Our bet
+
+Matching is commoditised. Nobody owns what happens after the match, which is where most matches die: chats that go nowhere and dates that never get planned.
+
+Soft Launch flips the incentive. We match people on shared interests, then plan and book the actual date inside the app, so we only earn when people actually meet.
+
+- **A guaranteed match every week** for everyone, not just the top profiles, with no paywall.
+- **Matched on what you love:** food, music and nights out first, not just photos.
+- **Help to show your best side:** AI suggestions for photos and prompts so good people stop getting overlooked.
+- **We plan the date:** a shortlist of venues you'd both like, booked in one tap, with a discount.
+
+## What's built
+
+The core loop runs end to end in an Expo (React Native) app backed by Supabase:
+
+- Email auth, onboarding and rich profiles, including college selection and lifestyle fields.
+- An interest-aware swipe deck with mutual-preference filtering, done in Postgres.
+- Swipe and match recording, with each pair stored once, ordered by user id.
+- Venue suggestions on match, ranked by the interests a match actually shares.
+- A propose / accept / decline booking flow that syncs live between both phones over Supabase Realtime.
+- In-app notifications, plus block and report with row-level security enforced in the database.
+
+Payments and real venue inventory are next. Booking is stubbed in the prototype.
+
+## Business model
+
+Revenue grows with dates, not with frustration:
+
+- A fixed fee per booked table, paid by the venue.
+- Commission on flowers and gifts from brand partners once a date is booked.
+- Paid venue spotlights inside date plans.
+- Optional premium extras. Everything you need to get a date stays free.
+
+## Market
+
+We start in Delhi NCR with 18 to 25 year olds. India's dating app market is projected to reach $1.4B by 2030. Bottom-up, we estimate about 750K intentional daters aged 18 to 25 in Tier 1 cities, and about 205K we can reach in Delhi NCR in year one.
+
+## Team
+
+Co-founded with Tushar Kapoor. We're Gen Z daters ourselves, from the exact demographic we're building for, and we know what makes our generation download, stay and show up.
+
+We're currently raising. The [pitch](https://soft-launch-pitch.vercel.app) and [investor deck](https://soft-launch-deck.vercel.app) have the full story.

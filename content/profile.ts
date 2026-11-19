@@ -164,6 +164,18 @@ export const profile: Profile = {
     { role: 'Media Lead', org: 'NTU School of Computing & Data Science' },
     { role: 'Marketing', org: 'Intl. Trading Club (NTU)' }
   ],
+  venture: {
+    name: 'Soft Launch',
+    slug: 'soft-launch',
+    role: 'Co-founder',
+    cofounder: 'Tushar Kapoor',
+    tagline: 'Built for the date, not the swipe.',
+    summary:
+      'A dating app for 18 to 25 year olds in Delhi NCR that ends in a booked table, not another chat thread. Everyone gets one guaranteed match a week, and we only make money when people actually go on dates.',
+    status: 'Raising',
+    pitchUrl: 'https://soft-launch-pitch.vercel.app',
+    deckUrl: 'https://soft-launch-deck.vercel.app'
+  },
   socials: [
     { label: 'GitHub', href: 'https://github.com/yashward001' },
     {

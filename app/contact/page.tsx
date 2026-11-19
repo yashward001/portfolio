@@ -55,8 +55,8 @@ export default function ContactPage() {
         }
       >
         Open to ML and software engineering roles, research collaborations, or
-        just a good conversation about AI systems. Email is the fastest way to
-        reach me.
+        just a good conversation about AI systems. Investors interested in Soft
+        Launch are very welcome too. Email is the fastest way to reach me.
       </PageHeader>
 
       <div className="grid gap-4 lg:grid-cols-[1fr_1.25fr]">
