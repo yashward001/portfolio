@@ -1,7 +1,7 @@
 import { ArrowRight, Download } from 'lucide-react';
 import Link from 'next/link';
 
-import { Avatar } from '@/components/home/avatar';
+import { AttentionField } from '@/components/home/attention-field';
 import {
   AwardCard,
   CollectionCard,
@@ -12,6 +12,7 @@ import {
 } from '@/components/home/bento-cards';
 import { FeaturedWorkCard } from '@/components/home/featured-work-card';
 import { PlaylistCard } from '@/components/home/playlist-card';
+import { TokenHeadline } from '@/components/home/token-headline';
 import { Reveal } from '@/components/ui/reveal';
 import { profile } from '@/content/profile';
 import { getFeaturedProjects, getProjects } from '@/lib/content';
@@ -30,29 +31,8 @@ export default function HomePage() {
   return (
     <div className="space-y-24">
       {/* ── Hero ─────────────────────────────────────────────────────── */}
-      <section aria-labelledby="hero-title" className="space-y-10">
-        <h1
-          id="hero-title"
-          className="text-[clamp(2.25rem,7vw,3.6rem)] font-semibold leading-[1.12] tracking-[-0.035em]"
-        >
-          <span className="block">
-            Hi, I&apos;m <Avatar className="mx-1" /> Yashwardhan!
-          </span>
-          <span className="block">
-            <span className="text-subtle">I&apos;m an</span> AI engineer{' '}
-            <span className="text-subtle">studying</span>
-          </span>
-          <span className="flex flex-wrap items-center gap-x-5 gap-y-3">
-            <span className="text-accent">CS at NTU.</span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5 text-[15px] font-medium tracking-normal text-fg shadow-chip">
-              <span className="relative flex h-2.5 w-2.5" aria-hidden>
-                <span className="animate-ping-soft absolute inset-0 rounded-full bg-success" />
-                <span className="relative h-2.5 w-2.5 rounded-full bg-success" />
-              </span>
-              {profile.availability}
-            </span>
-          </span>
-        </h1>
+      <section aria-labelledby="hero-title" className="space-y-6">
+        <TokenHeadline />
 
         <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:gap-6">
           <a
@@ -70,27 +50,26 @@ export default function HomePage() {
       </section>
 
       {/* ── Bento ────────────────────────────────────────────────────── */}
-      <Reveal>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-          <ExperienceCard />
-          <PlaylistCard />
-          <CollectionCard />
-          <LocationCard />
-          <FeaturedWorkCard
-            className="sm:col-span-2"
-            items={featured.map((p) => ({
-              slug: p.slug,
-              title: p.title,
-              shortTitle: shortName(p.title),
-              summary: p.summary,
-              impact: p.impactMetric,
-              repo: repoUrl(p.links.repo)
-            }))}
-          />
-          <AwardCard className="sm:col-span-2 md:col-span-1" />
-          <ToolboxCard className="sm:col-span-2" />
-        </div>
-      </Reveal>
+      <AttentionField className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+        <ExperienceCard wave={0} />
+        <PlaylistCard wave={1} />
+        <CollectionCard wave={2} />
+        <LocationCard wave={1} />
+        <FeaturedWorkCard
+          wave={2}
+          className="sm:col-span-2"
+          items={featured.map((p) => ({
+            slug: p.slug,
+            title: p.title,
+            shortTitle: shortName(p.title),
+            summary: p.summary,
+            impact: p.impactMetric,
+            repo: repoUrl(p.links.repo)
+          }))}
+        />
+        <AwardCard wave={2} className="sm:col-span-2 md:col-span-1" />
+        <ToolboxCard wave={3} className="sm:col-span-2" />
+      </AttentionField>
 
       {/* ── More projects ───────────────────────────────────────────── */}
       <Reveal>

@@ -152,6 +152,41 @@
   color: #7c3aed;
 }
 
+/* ─── Attention field (components/home/attention-field.tsx) ─────────────── */
+/* Unlayered, so it wins over the .card shadow from the components layer. */
+[data-attn-card] {
+  --attn: 0;
+  box-shadow:
+    0 0 0 calc(1px + var(--attn) * 1.5px)
+      hsl(var(--accent) / calc(var(--attn) * 0.8)),
+    0 calc(12px + var(--attn) * 18px) calc(32px + var(--attn) * 24px)
+      calc(-16px + var(--attn) * 2px)
+      hsl(var(--accent) / calc(var(--attn) * 0.35)),
+    0 1px 2px rgba(17, 17, 17, 0.04),
+    0 12px 32px -16px rgba(17, 17, 17, 0.12);
+}
+
+/* ─── Equalizer (playlist card) ──────────────────────────────────────────── */
+@keyframes eq {
+  0%,
+  100% {
+    transform: scaleY(0.3);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+.eq-bar {
+  transform-origin: bottom;
+  transform: scaleY(0.35);
+  animation: eq 0.9s ease-in-out infinite paused;
+}
+
+.group:hover .eq-bar {
+  animation-play-state: running;
+}
+
 /* ─── Motion ─────────────────────────────────────────────────────────────── */
 @keyframes ping-soft {
   0% {

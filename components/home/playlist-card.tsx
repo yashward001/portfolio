@@ -1,6 +1,5 @@
 'use client';
 
-import { Play } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import { BentoCard } from '@/components/home/bento-cards';
@@ -42,7 +41,13 @@ const Cover = ({
   </span>
 );
 
-export const PlaylistCard = ({ className }: { className?: string }) => {
+export const PlaylistCard = ({
+  className,
+  wave = 0
+}: {
+  className?: string;
+  wave?: number;
+}) => {
   const [data, setData] = useState<Playlist | null>(null);
 
   useEffect(() => {
@@ -64,6 +69,7 @@ export const PlaylistCard = ({ className }: { className?: string }) => {
   return (
     <BentoCard
       label="My playlist"
+      wave={wave}
       className={`group h-[272px] ${className ?? ''}`}
     >
       <div aria-hidden className="relative mx-auto mt-12 h-[136px] w-full">
@@ -91,10 +97,15 @@ export const PlaylistCard = ({ className }: { className?: string }) => {
             rel="noreferrer"
             className="focus-ring mt-0.5 inline-flex items-center gap-1 rounded text-xs text-muted hover:text-fg"
           >
-            <Play
-              className="h-3 w-3 fill-[#1db954] text-[#1db954]"
-              aria-hidden
-            />
+            <span aria-hidden className="flex h-3 items-end gap-[2px]">
+              {[0, 0.25, 0.5, 0.15].map((d) => (
+                <span
+                  key={d}
+                  className="eq-bar h-full w-[2.5px] rounded-full bg-[#1db954]"
+                  style={{ animationDelay: `${-d}s` }}
+                />
+              ))}
+            </span>
             Play on Spotify
             {data?.totalTracks ? (
               <span className="text-subtle">· {data.totalTracks} tracks</span>
