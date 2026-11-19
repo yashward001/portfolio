@@ -45,12 +45,6 @@ export default function ContactPage() {
             </a>
           </li>
           <li>
-            <span className="text-[#004d1a]">ALT:   </span>
-            <a href="mailto:yashwardhansingh.tomar@outlook.com" className="text-[#33ff66] hover:text-[#00ff41]">
-              yashwardhansingh.tomar@outlook.com
-            </a>
-          </li>
-          <li>
             <span className="text-[#004d1a]">GH:    </span>
             <a href={profile.github} className="text-[#33ff66] hover:text-[#00ff41]" target="_blank" rel="noreferrer">
               {profile.github.replace('https://', '')}

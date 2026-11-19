@@ -34,85 +34,21 @@ function useTypewriter(text: string, delay = 800, speed = 40) {
   return display;
 }
 
-/* ─── Experience data ────────────────────────────────────────────────────── */
-const EXPERIENCE = [
-  {
-    dates: 'Jan 2026 → Jun 2026',
-    company: 'Singapore Business Federation (SBF)',
-    location: 'Singapore',
-    role: 'GenAI Intern, Information Technology Division',
-    status: 'COMPLETED',
-    highlight: true,
-    bullets: [
-      'Deployed Copilot Studio assistants with RAG over SharePoint — chunking, metadata filters, citations, eval sets driving iterative answer-quality gains',
-      'Shipped Power Automate + API integrations with telemetry tracking resolution rate, failure reasons, and latency',
-    ],
-    tags: ['COPILOT STUDIO', 'RAG', 'POWER AUTOMATE', 'SHAREPOINT'],
-  },
-  {
-    dates: 'Apr 2025 → Jul 2025',
-    company: 'Gigin.ai',
-    location: 'Remote',
-    role: 'AI Software Development Intern',
-    status: 'COMPLETED',
-    highlight: false,
-    bullets: [
-      'Built document integrity pipeline combining extraction checks, embedding similarity, and layout/metadata heuristics',
-      'Achieved 95%+ fraud detection accuracy with 80% reduction in verification time via ablation-tuned ensemble scoring',
-    ],
-    tags: ['PYTORCH', 'FASTAPI', 'COMPUTER VISION', 'ENSEMBLE ML'],
-  },
-  {
-    dates: 'Sep 2024 → Nov 2024',
-    company: 'Proplens AI (NTU Venture Program)',
-    location: 'India (Remote)',
-    role: 'AI Intern',
-    status: 'COMPLETED',
-    highlight: false,
-    bullets: [
-      'Shipped production LLM chatbot with entity extraction and knowledge-graph-grounded responses for real estate lead management',
-      'Added confidence gating and human hand-off, reducing hallucinated answers in low-confidence query paths',
-    ],
-    tags: ['LLM', 'KNOWLEDGE GRAPH', 'FASTAPI'],
-  },
-  {
-    dates: 'May 2024 → Jul 2024',
-    company: 'STMicroelectronics',
-    location: 'Singapore',
-    role: 'Machine Learning Intern',
-    status: 'COMPLETED',
-    highlight: false,
-    bullets: [
-      'Eliminated run-to-run noise in model benchmarking: designed statistically rigorous harness with fixed seeds, pinned thread affinity, and repeated trials producing stable p50/p95/p99 latency',
-      'Cut model memory footprint via post-training quantization (INT8/FP16) on transformer models for edge devices — 30% latency reduction, 25% memory efficiency improvement',
-    ],
-    tags: ['PYTORCH', 'QUANTIZATION', 'TRANSFORMERS', 'HUGGING FACE'],
-  },
-  {
-    dates: 'Aug 2023 → Aug 2027',
-    company: 'Nanyang Technological University (NTU)',
-    location: 'Singapore',
-    role: 'B.Eng. Computer Science · Minor in Business',
-    status: 'IN PROGRESS',
-    highlight: false,
-    isEdu: true,
-    bullets: [
-      'Concentrations: Intelligence and Modelling/Simulations',
-      'Relevant: Data Structures, OS, Computer Networks, ML, Database Systems, Probability & Statistics',
-    ],
-    tags: ['CS', 'ML', 'NTU', 'SINGAPORE'],
-  },
-];
+/* ─── Experience data (derived from content/profile.ts) ──────────────────── */
+const EXPERIENCE = profile.timeline.map((entry, i) => ({
+  dates: `${entry.start} → ${entry.end}`,
+  company: entry.org,
+  location: entry.location,
+  role: entry.title,
+  status: entry.current ? (entry.education ? 'IN PROGRESS' : 'ACTIVE') : 'COMPLETED',
+  highlight: i === 0,
+  isEdu: Boolean(entry.education),
+  bullets: entry.bullets,
+  tags: entry.tags,
+}));
 
-/* ─── Skills data ────────────────────────────────────────────────────────── */
-const SKILLS = [
-  { group: 'LANGUAGES', items: ['Python', 'C++20', 'Java', 'TypeScript', 'JavaScript'] },
-  { group: 'ML / AI',   items: ['PyTorch', 'Hugging Face', 'LLMs', 'Transformers', 'FAISS', 'Gemini API'] },
-  { group: 'WEB',       items: ['FastAPI', 'React', 'Next.js', 'WebSockets', 'REST APIs'] },
-  { group: 'DATA',      items: ['PostgreSQL', 'Firestore', 'Parquet', 'Power Automate'] },
-  { group: 'SYSTEMS',   items: ['Linux', 'CMake', 'Ninja', 'Playwright', 'Benchmarking'] },
-  { group: 'TOOLS',     items: ['Git', 'Vercel', 'Azure', 'Copilot Studio', 'Weights & Biases'] },
-];
+/* ─── Skills data (derived from content/profile.ts) ──────────────────────── */
+const SKILLS = (profile.skillGroups ?? []).map((g) => ({ group: g.category, items: g.items }));
 
 /* ─── System status rows ─────────────────────────────────────────────────── */
 const STATUS_ROWS = [
@@ -326,6 +262,36 @@ export default function AboutPage() {
             </motion.div>
           ))}
         </div>
+      </section>
+
+      {/* ── SECTION 3b: AWARDS + LEADERSHIP ──────────────────────────────── */}
+      <section className="grid gap-10 border-b border-[#003d0f] px-6 py-14 lg:grid-cols-2">
+        <motion.div {...fadeUp} className="space-y-5">
+          <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#00aa44]">
+            &gt; AWARDS.log
+          </p>
+          {profile.awards.map((award) => (
+            <div key={award.title} className="space-y-1.5 border border-[#003d0f] bg-[#0a0f0a] p-5">
+              <p className="font-mono text-[10px] text-[#00aa44]">{award.date}</p>
+              <p className="font-mono text-sm font-bold text-[#00ff41]">{award.title}</p>
+              <p className="font-mono text-xs leading-relaxed text-white/70">{award.detail}</p>
+            </div>
+          ))}
+        </motion.div>
+
+        <motion.div {...fadeUp} className="space-y-5">
+          <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#00aa44]">
+            &gt; LEADERSHIP.log
+          </p>
+          <ul className="space-y-3">
+            {profile.leadership.map((item) => (
+              <li key={item.role + item.org} className="border border-[#003d0f] bg-[#0a0f0a] p-5 font-mono">
+                <p className="text-sm font-bold text-white">{item.role}</p>
+                <p className="text-xs text-white/70">{item.org}</p>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
       </section>
 
       {/* ── SECTION 4: MUSIC SHOWCASE ────────────────────────────────────── */}

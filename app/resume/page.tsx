@@ -27,12 +27,33 @@ export default function ResumePage() {
             <div key={`${entry.title}-${entry.org}`}>
               <p className="font-medium">{entry.title}</p>
               <p className="text-muted">
-                {entry.org} · {entry.start} - {entry.end}
+                {entry.org} · {entry.location} · {entry.start} - {entry.end}
               </p>
-              <p className="text-muted">{entry.detail}</p>
+              <ul className="mt-1 list-disc space-y-1 pl-5 text-muted">
+                {entry.bullets.map((bullet) => (
+                  <li key={bullet}>{bullet}</li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
+
+        <h3 className="mt-8 font-display text-lg">Awards</h3>
+        <div className="mt-3 space-y-2 text-sm">
+          {profile.awards.map((award) => (
+            <div key={award.title}>
+              <p className="font-medium">
+                {award.title} · {award.date}
+              </p>
+              <p className="text-muted">{award.detail}</p>
+            </div>
+          ))}
+        </div>
+
+        <h3 className="mt-8 font-display text-lg">Leadership & Activities</h3>
+        <p className="mt-3 text-sm text-muted">
+          {profile.leadership.map((item) => `${item.role}, ${item.org}`).join(' · ')}
+        </p>
       </div>
 
       <a

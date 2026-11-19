@@ -24,8 +24,8 @@ export const Timeline = () => {
   return (
     <ol className="space-y-5 font-mono">
       {items.map((item) => {
-        const isEdu = item.org.includes('University') || item.org.includes('NTU');
-        const details = item.detail.split(';').map((d) => d.trim()).filter(Boolean);
+        const isEdu = Boolean(item.education);
+        const details = item.bullets;
 
         return (
           <li key={`${item.title}-${item.org}`} className="space-y-1">
@@ -42,7 +42,7 @@ export const Timeline = () => {
             {details.map((d, i) => (
               <p key={i} className="pl-11 text-[11px] text-[#006622]">
                 <span className="text-[#003d0f]">└─ </span>
-                {d.replace(/\(India.*?\)/, '').trim()}
+                {d}
               </p>
             ))}
 

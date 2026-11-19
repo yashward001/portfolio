@@ -3,9 +3,12 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { SpotlightCard } from '@/components/ui/spotlight-card';
+import { profile } from '@/content/profile';
+
+const INTERNSHIPS = profile.timeline.filter((entry) => !entry.education).length;
 
 const STATS = [
-  { label: '//INTERNSHIPS', value: '04',        numeric: 4,   suffix: '',    sub: 'industry roles'  },
+  { label: '//INTERNSHIPS', value: String(INTERNSHIPS).padStart(2, '0'), numeric: INTERNSHIPS, suffix: '', sub: 'industry roles' },
   { label: '//PROJECTS',    value: '10+',       numeric: 10,  suffix: '+',   sub: 'major builds'    },
   { label: '//UPCOMING',    value: '01',        numeric: 1,   suffix: '',    sub: 'launches'        },
   { label: '//SKILLS',      value: '20+',       numeric: 20,  suffix: '+',   sub: 'technologies'    },

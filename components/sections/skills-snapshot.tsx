@@ -3,11 +3,10 @@ import { Github, Linkedin } from 'lucide-react';
 import { profile } from '@/content/profile';
 
 const CATEGORY_PREFIX: Record<string, string> = {
-  'Languages':     'LANG',
-  'ML / AI':       'ML/AI',
-  'Web & Backend': 'WEB',
-  'Data & Infra':  'DATA',
-  'Tools':         'TOOLS'
+  'Languages':                'LANG',
+  'Cloud & AI Platforms':     'CLOUD',
+  'ML & GenAI':               'ML/AI',
+  'Systems & Infrastructure': 'SYS'
 };
 
 export const SkillsSnapshot = () => {

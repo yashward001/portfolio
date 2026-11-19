@@ -52,7 +52,7 @@ const footerLinks: FooterSection[] = [
     links: [
       { title: 'GitHub',   href: 'https://github.com/yashward001',                          icon: Github,   external: true },
       { title: 'LinkedIn', href: 'https://linkedin.com/in/yashwardhan-singh-tomar',         icon: Linkedin, external: true },
-      { title: 'Email',    href: 'mailto:yashward001@e.ntu.edu.sg',                         icon: Mail,     external: true },
+      { title: 'Email',    href: 'mailto:yashwardhansingh.tomar@outlook.com',              icon: Mail,     external: true },
     ],
   },
 ];

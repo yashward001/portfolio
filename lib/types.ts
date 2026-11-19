@@ -25,11 +25,17 @@ export const profileSchema = z.object({
     z.object({
       title: z.string(),
       org: z.string(),
+      location: z.string(),
       start: z.string(),
       end: z.string(),
-      detail: z.string()
+      bullets: z.array(z.string()).min(1),
+      tags: z.array(z.string()).default([]),
+      education: z.boolean().optional(),
+      current: z.boolean().optional()
     })
   ),
+  awards: z.array(z.object({ title: z.string(), detail: z.string(), date: z.string() })).default([]),
+  leadership: z.array(z.object({ role: z.string(), org: z.string() })).default([]),
   socials: z.array(socialSchema)
 });
 
