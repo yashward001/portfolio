@@ -5,7 +5,7 @@ const site = {
   title: 'Yashwardhan Singh Tomar | Computer Science Portfolio',
   description:
     'Portfolio of Yashwardhan Singh Tomar, a Computer Science student focused on AI systems, product engineering, and high-impact software.',
-  url: 'https://example-portfolio.vercel.app'
+  url: 'https://yashwardhansinghtomar.vercel.app'
 };
 
 export const baseMetadata: Metadata = {
@@ -23,13 +23,13 @@ export const baseMetadata: Metadata = {
     description: site.description,
     type: 'website',
     url: site.url,
-    images: [{ url: '/api/og?title=Yash%20Patel', width: 1200, height: 630 }]
+    images: [{ url: '/api/og?title=Yashwardhan%20Singh%20Tomar', width: 1200, height: 630 }]
   },
   twitter: {
     card: 'summary_large_image',
     title: site.title,
     description: site.description,
-    images: ['/api/og?title=Yash%20Patel']
+    images: ['/api/og?title=Yashwardhan%20Singh%20Tomar']
   },
   robots: {
     index: true,
