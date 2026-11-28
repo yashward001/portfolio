@@ -52,7 +52,7 @@ export const getProjects = () => {
     .map((project) => project as Project);
 };
 
-export const getFeaturedProjects = () => getProjects().filter((project) => project.featured).slice(0, 3);
+export const getFeaturedProjects = () => getProjects().filter((project) => project.featured).slice(0, 4);
 
 export const getProjectBySlug = (slug: string) => getProjects().find((project) => project.slug === slug);
 

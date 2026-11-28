@@ -1,0 +1,80 @@
+---
+title: "Shrinking Shor — Quantum Circuit Optimisation for ECDSA"
+slug: "shrinking-shor"
+summary: "Steered an AI coding agent through 38 verified attempts to make the quantum circuit at the heart of Shor's attack on Bitcoin's signature curve 85% cheaper: 2,715 → 1,404 qubits and 3.94M → 1.13M Toffoli gates."
+role: "NTU quantum computing project · Team of 4"
+date: "2026-11-08"
+tags:
+  - Quantum Computing
+  - Cryptography
+  - AI Agents
+  - Research
+stack:
+  - Rust
+  - Claude Code
+  - Claude Opus 5.5
+  - Reversible circuits
+  - Git
+impactMetric: "85.2% lower qubits × Toffoli score on the ECDSA.Fail secp256k1 benchmark in 11 days, with all 38 attempts passing 9,024-input validation"
+featured: true
+cover: "/images/project-streammesh.svg"
+links:
+  repo: "https://github.com/codingtilman/qc-ecdsa-point-addition"
+sortImpact: 96
+---
+
+## The target
+
+Every Bitcoin and Ethereum signature rests on one curve, secp256k1, and on one bet: given a public key Q = dG, nobody can recover the private key d. Classical computers can't. A large enough fault-tolerant quantum computer running **Shor's algorithm** could.
+
+Shor's algorithm doesn't get there for free. Its inner loop adds points on the curve, over and over, and it has to do that reversibly, on 256-qubit registers. The [ECDSA.Fail challenge](https://github.com/Layr-Labs/ecdsafail-challenge) asks a simple question: how cheap can you make that one point addition?
+
+<PointAddition />
+
+This isn't an attack on anything today. It's resource estimation: shrinking the bill for a machine that doesn't exist yet.
+
+## Why it's hard
+
+A quantum circuit can't throw anything away. Every scratch qubit has to be **uncomputed** back to zero, and the circuit must not leave an input-dependent phase behind, or the surrounding algorithm falls apart. All of the arithmetic, including modular inversion, has to be built from Clifford and Toffoli gates, and Toffolis are the expensive ones on a fault-tolerant machine.
+
+The benchmark scores a circuit as **S = Q × T**: peak live qubits times average Toffoli gates. A candidate only counts if it passes 9,024 hash-derived inputs on three channels: correct output, clean ancillas and no stray phase.
+
+## What I did
+
+Our team of four studied how far AI coding agents can push this circuit. Part A ran the agent on its own under two prompting styles, ten attempts each. I ran **Part B**: the same agent (Claude Code on Claude Opus 5.5), with me in the loop.
+
+The protocol was strict. Each round, the agent proposed costed candidates and I picked one. Before writing any code, the agent **pre-registered** its predicted ΔT and ΔQ. Then it built, tested and ran one official benchmark, logged against the prediction. Thirty-eight attempts, 29 October to 8 November 2026. Every one passed.
+
+Each milestone below redraws the score as what it really is: an area.
+
+<SpacetimeShrink />
+
+## The moves that mattered
+
+- **Record-and-replay.** The original circuit computes the slope λ with one modular inversion and needs a second inversion just to erase it. Instead, a forward GCD records its decisions on a tape, replaying the tape divides in place, and a backward GCD erases the tape. The λ register disappears.
+- **Ping-pong GCD.** The two registers swap roles every round, so the decision bit costs two CNOTs and each step needs one adder, with no comparator and no controlled swap. A replay round dropped from about 1,270 Toffolis to about 400, and **S halved in a single attempt**.
+- **Qubit lifetimes.** Registers exist only while they hold information, the inversion runs on its input's own qubits, and the 258-bit adder splits into two halves joined by one measured carry qubit. Peak workspace fell from 1,287 qubits to 132.
+- **Our own pieces:** fitted round counts and widths, a one-Toffoli fix-up for the first replay rounds, a 34-bit correction operand and the chunked adder's carry predicate. Each was checked bit-exactly in a classical emulation before it was built.
+
+<ProtocolRace />
+
+Steering cost speed early on: my run was only 12.7% down after ten attempts, because they went into profiling the circuit. Profiling showed that the original iteration caps were below the worst case, so about 26% of full validation runs failed on luck alone. Fixing that first made every later result trustworthy, and pre-registration paid off: by the end, measured Toffoli counts landed within 0.1% of the agent's predictions.
+
+<MechanismSplit />
+
+70% of the reduction came in stages that one of my rulings opened: allowing tail-fitted widths, allowing published literature, setting a target from the competition paper, and relaxing the failure budget. The agent proposed most of the options I ruled on, so the credit is genuinely shared.
+
+## Keeping it honest
+
+- **Passing isn't proof.** Some changes are exact. Others size a register from measured tails and can fail on rare inputs. Each probabilistic change got a named failure bound: about 2 × 10⁻⁹ per point addition under the strict policy and 2 × 10⁻⁷ under the relaxed one. The best strict-policy result, **−83.8%**, is reported alongside the headline.
+- **Clifford gates fell too, by 45%**, even though S doesn't count them. The best autonomous run had pushed them up 31%.
+- **The leaderboard is still ahead.** We submitted three circuits. The challenge's own runner reproduced every score, but the community best was about 0.89 × 10⁹, against our 1.58 × 10⁹.
+
+## Team
+
+- **Yashwardhan Singh Tomar:** Part B, the human-steered study; the comparison of both parts; evaluating attempts on the leaderboard-leading circuit.
+- **Tilman Holzer:** Part A experiments in isolated environments, log audits, and the exact-vs-probabilistic analysis.
+- **Chen Yuguo:** the agent architectures and the master prompt.
+- **Dhaded Aditya Mahalingeshwar:** introduction and background, team videos and initial circuit testing.
+
+All code, prompts and logs are in the [project repository](https://github.com/codingtilman/qc-ecdsa-point-addition). Every accepted circuit is a commit that rebuilds to its reported score.
