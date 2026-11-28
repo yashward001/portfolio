@@ -30,94 +30,100 @@ links:
 sortImpact: 98
 ---
 
-One request, start to finish: what happens between saying a sentence and watching ATLAS click through two apps. Let it play, or jump to a chapter.
+Follow one request, start to finish: what happens between saying a sentence and watching ATLAS click through two apps. Scroll, and the diagram plays along.
 
-<AtlasFilm />
+<AtlasJourney>
 
-## Problem
+<AtlasBeat scene="system">
 
-Desktop automation splits into two bad options: record-and-replay tools that shatter on any UI change, and scripting APIs that require a developer for every new workflow. Neither handles natural language, neither recovers gracefully from failure, and neither gives you any auditability over what ran and why.
+### Two bad options, so I built a third
 
-## Constraints
+Desktop automation usually means record-and-replay tools that break on any UI change, or scripting APIs that need a developer for every new workflow. Neither understands plain language, neither recovers from failure, and neither shows you what ran and why.
 
-- Intent arrives as voice or text and must map to typed, pre-approved UI actions — no ad-hoc scripting
-- The model is only allowed to *select* capabilities, not generate arbitrary execution logic
-- Every step must be observable: screenshot evidence, retry state, live status
-- High-risk actions pause for explicit human approval before running
-- Capability definitions must be storable and versionable, decoupled from prompts entirely
+ATLAS is five parts in one loop: voice in, a plan from Gemini, a human gate, Playwright doing the clicking, and a live feed back to the UI.
 
-## Approach
+</AtlasBeat>
 
-Built across three deliberate layers. The frontend runs a formal 11-state/9-event state machine — `idle → listening → transcribing → planning → awaiting_approval → executing` — so every interaction phase is an explicit node, not a conditional buried in a component. Framer Motion drives the transitions.
+<AtlasBeat scene="voice">
 
-The backend is structured around a Firestore capability registry: a schema-enforced document for every automatable UI action, each carrying its selector, typed parameters, preconditions, postconditions, risk level, confidence score, and auto-heal history. When a user speaks, Gemini 2.5 Flash receives the full registry as LLM tools and returns a plan as an ordered list of capability IDs with filled parameters. The model cannot generate Playwright code — it can only choose from pre-approved actions. This bounds the execution surface completely.
+### You speak, and the audio goes straight to Gemini
 
-Playwright resolves each capability ID, executes with retry logic, captures a bounding-box screenshot, and pauses for approval if risk level demands it. A WebSocket bridge streams every status update to the frontend live.
+The **Gemini Live API** streams microphone audio directly for transcription and intent extraction. There’s no separate speech-to-text step in between, so planning starts sooner.
 
-Voice input bypasses a separate STT step entirely — Gemini Live API streams microphone audio directly, cutting latency between speaking and plan generation.
+Voice or text, the request has to end up as typed, pre-approved UI actions. No ad-hoc scripting.
 
-<AtlasStateMachine />
+</AtlasBeat>
 
-## Architecture
+<AtlasBeat scene="plan">
 
-### Layer 1 — Frontend (Next.js + TypeScript)
+### The registry is the model’s entire vocabulary
 
-A formal **11-state / 9-event state machine** governs every interaction phase:
+Every automatable UI action is a **Firestore** document with its selector, typed parameters, pre- and postconditions, risk level, confidence score and auto-heal history.
 
-- States: `idle`, `listening`, `transcribing`, `planning`, `awaiting_approval`, `executing`, `step_success`, `step_failed`, `retrying`, `completed`, `error`
-- Events: `START_VOICE`, `TRANSCRIPT_READY`, `PLAN_READY`, `USER_APPROVED`, `STEP_DONE`, `STEP_FAILED`, `RETRY`, `ABORT`, `RESET`
-- Framer Motion drives state-transition animations for immediate visual feedback
+**Gemini 2.5 Flash** receives the whole registry as tools and returns an ordered list of capability IDs with parameters filled in. It can *choose* actions, but it can’t write Playwright code, so everything that can run was declared in advance.
 
-### Layer 2 — Backend (FastAPI + Firestore)
+Because UI knowledge lives in the registry and not the prompt, a selector can change without touching the inference layer or redeploying.
 
-A **Firestore capability registry** stores every automatable UI action as a structured document with:
+</AtlasBeat>
 
-- `action_type`, `selector`, `description`, `parameters`
-- `preconditions`, `postconditions`
-- `risk_level` (low / medium / high)
-- `confidence_score`, `auto_heal_history`
+<AtlasBeat scene="approve">
 
-User intent is sent to **Gemini 2.5 Flash** alongside the full capability registry formatted as LLM tools. Gemini returns a structured execution plan as a sequence of capability IDs with filled parameters — no free-form scripting.
+### Risky plans stop at the gate
+
+Risk level belongs to each capability and is set when it’s authored. The model never decides at runtime whether a step needs a human.
+
+Here, the step that posts to a team channel needs sign-off, so the whole plan waits for an explicit approval before anything runs.
+
+</AtlasBeat>
+
+<AtlasBeat scene="execute">
+
+### Playwright clicks, and keeps the receipts
+
+Each capability ID resolves against the registry to a typed action: click, fill, navigate or assert. Steps run in order, and each one saves a screenshot with its target’s bounding box highlighted.
+
+When a step can’t find its target in time, retry logic takes over instead of failing the run.
+
+</AtlasBeat>
+
+<AtlasBeat scene="stream">
+
+### Every update is pushed live to the UI
+
+A **WebSocket** bridge streams each step’s status (pending, running, success, failed, retrying) along with the annotated screenshots and approval prompts.
+
+The frontend is a formal state machine, 11 states and 9 events, so every phase is an explicit node rather than a flag buried in a component. Framer Motion animates each transition, and the finished run leaves a full transcript to audit.
+
+</AtlasBeat>
+
+<AtlasBeat scene="loop">
+
+### Voice to executed workflow in under five seconds
+
+The diagram is slowed down so you can see each stage. The real loop runs in under five seconds, across Gmail, Slack, Spotify, Notion, Outlook and Google Docs.
+
+<AtlasStats />
+
+</AtlasBeat>
+
+</AtlasJourney>
+
+## Up close
+
+### A capability, as it’s stored
+
+This is everything the planner and the executor know about one action. Nothing about selectors or risk lives in the prompt.
 
 <AtlasCapabilityDoc />
 
-### Layer 3 — Execution (Playwright)
+### The state machine, every node
 
-The Playwright engine runs each plan step sequentially:
+One example session, moving through it live. There are no undefined transitions, and the transition graph doubles as the documentation.
 
-- Resolves capability IDs against the Firestore registry
-- Executes typed actions (click, fill, navigate, assert) with retry logic
-- Captures per-step screenshots with bounding-box highlights
-- Flags high-risk steps and pauses for human approval before proceeding
+<AtlasStateMachine />
 
-### Observability
+## What I’d do next
 
-A **WebSocket bridge** streams live execution state to the frontend:
-
-- Per-step status updates (pending / running / success / failed / retrying)
-- Screenshot evidence with annotated bounding boxes
-- Retry indicators and approval gate prompts
-- Full execution transcript on completion
-
-
-### Voice-First Interaction
-
-**Gemini Live API** streams microphone audio directly for real-time transcription and intent extraction, bypassing a separate STT step and reducing end-to-end latency from voice to plan generation.
-
-## Key Technical Choices
-
-1. **Capability registry over prompt-embedded selectors** — UI knowledge lives in Firestore, not in the prompt. Update a selector or add a capability without touching the inference layer or redeploying.
-2. **Structured plan as capability IDs, not generated code** — the model's output surface is a typed list, not an arbitrary script. Every executable action was explicitly declared in advance.
-3. **Formal state machine over ad-hoc flags** — 11 states, 9 events, zero undefined transitions. The state machine is independently testable and the transition graph is the documentation.
-4. **Risk level in the registry, not inferred at runtime** — human approval gates are declared when a capability is authored, not decided by the model during execution.
-
-## Results
-
-- Full voice-to-execution pipeline operational across 6 applications (~50 capabilities): Gmail, Slack, Spotify, Notion, Outlook, Google Docs
-- State machine eliminates undefined interaction states across the full session lifecycle
-- Per-capability risk governance with confidence scores and auto-heal history in the registry
-- Real-time WebSocket feed with annotated screenshots makes every step auditable after the fact
-
-## What I'd Do Next
-
-Automated capability discovery — crawl a target application's UI and propose new capability records rather than authoring them by hand. Regression harnesses that replay recorded execution traces against UI updates to detect selector drift. Policy-based approval routing so team deployments can define who approves what based on capability risk level, not just a binary gate.
+- **Capability discovery:** crawl an app’s UI and propose new capability records instead of writing them by hand.
+- **Drift detection:** replay recorded execution traces against UI updates to catch selectors that have gone stale.
+- **Approval routing:** let teams decide who approves what, based on a capability’s risk level, instead of a single yes/no gate.

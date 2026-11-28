@@ -1,15 +1,15 @@
 'use client';
 
 import { AnimatePresence, motion, useInView } from 'framer-motion';
-import { Database, Mic, MousePointer2, Pause, Play, RotateCcw } from 'lucide-react';
-import { useEffect, useRef, useState, type ReactNode } from 'react';
+import { Database, Mic, MousePointer2 } from 'lucide-react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 
 import { cn } from '@/lib/utils';
 
 import { useMotionOk } from '../kit';
 
 /* ATLAS, end to end, as one camera-driven motion piece. Everything is a pure function of the
-   clock `t`, so scrubbing, chapter jumps and reduced motion all render the same frames. */
+   clock `t`, so scrolling forwards or backwards, chapter jumps and reduced motion all render the same frames. */
 
 /* ─── clock helpers ─────────────────────────────────────────────────── */
 
@@ -63,56 +63,15 @@ const along = (pts: Pt[], u: number): Pt => {
 /* ─── script ────────────────────────────────────────────────────────── */
 
 const CHAPTERS = [
-  {
-    label: 'System',
-    from: 0,
-    to: 3,
-    title: 'Five parts, one loop',
-    body: 'Voice in, a plan from Gemini, a human gate, Playwright doing the clicking, and a live feed back to the UI. Here’s one request travelling through all of it, slowed down.'
-  },
-  {
-    label: 'Voice',
-    from: 3,
-    to: 9,
-    title: 'Speak, and the audio streams straight to Gemini',
-    body: 'Microphone audio goes directly to the Gemini Live API for transcription and intent extraction. There’s no separate speech-to-text hop in between, which cuts the wait before planning starts.'
-  },
-  {
-    label: 'Plan',
-    from: 9,
-    to: 16,
-    title: 'The registry becomes the model’s only vocabulary',
-    body: 'Every capability in the Firestore registry is handed to Gemini 2.5 Flash as a tool. It answers with an ordered list of capability IDs and filled parameters. It can choose actions; it can’t write code.'
-  },
-  {
-    label: 'Approve',
-    from: 16,
-    to: 21,
-    title: 'Risky plans stop at the gate',
-    body: 'Each capability carries a risk level set when it was authored, not decided by the model at runtime. This plan includes a medium-risk step, so it waits until a human approves.'
-  },
-  {
-    label: 'Execute',
-    from: 21,
-    to: 31,
-    title: 'Playwright runs each step and keeps the evidence',
-    body: 'Every capability ID resolves to a typed action. Each step captures a bounding-box screenshot. When step 3 can’t find its target in time, retry logic kicks in instead of the run failing.'
-  },
-  {
-    label: 'Stream',
-    from: 31,
-    to: 36,
-    title: 'Every status change is pushed live to the UI',
-    body: 'A WebSocket bridge streams each update to the frontend, where the 11-state machine moves in lockstep and the screenshots land in the run transcript.'
-  },
-  {
-    label: 'Whole loop',
-    from: 36,
-    to: 42,
-    title: 'Voice to executed workflow in under five seconds',
-    body: 'Across 6 apps and roughly 50 capabilities. The film above is slowed down so you can see each stage; the real loop runs in under five seconds.'
-  }
+  { id: 'system', label: 'System', from: 0, to: 3, still: 2.99 },
+  { id: 'voice', label: 'Voice', from: 3, to: 9, still: 8.9 },
+  { id: 'plan', label: 'Plan', from: 9, to: 16, still: 15.4 },
+  { id: 'approve', label: 'Approve', from: 16, to: 21, still: 19.0 },
+  { id: 'execute', label: 'Execute', from: 21, to: 31, still: 30.2 },
+  { id: 'stream', label: 'Stream', from: 31, to: 36, still: 35.9 },
+  { id: 'loop', label: 'Whole loop', from: 36, to: 42, still: 38.6 }
 ];
+// `still` is the frame shown for each chapter under reduced motion: the clearest moment, no scrubbing
 const TOTAL = CHAPTERS[CHAPTERS.length - 1]!.to;
 
 type Box = [number, number, number, number];
@@ -220,55 +179,171 @@ const lerpR = (a: R, b: R, u: number): R => ({
 
 const TRANSCRIPT = ['Find the latest invoice in Gmail', 'and post it to #finance on Slack'];
 
-/* ─── component ─────────────────────────────────────────────────────── */
+/* ─── scroll journey ────────────────────────────────────────────────── */
 
-export const AtlasFilm = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const visible = useInView(ref, { amount: 0.35 });
+/* The article is the timeline. Each <AtlasBeat> owns one chapter of the scene: as its text
+   scrolls past a reading line, the clock scrubs from the chapter's start to its end, and the
+   stage stays pinned beside (desktop) or above (mobile) the text. A second clock `w` keeps the
+   ambient motion (orb spin, waveform, retry ring) alive while the reader pauses. */
+
+const PREVIEW = 2.99; // first paint and no-JS: all five parts drawn, nothing in flight
+
+const JourneyCtx = createContext<{ active: number }>({ active: 0 });
+
+export const AtlasJourney = ({ children }: { children: ReactNode }) => {
+  const root = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const near = useInView(root, { margin: '200px 0px' });
   const { mounted, ok } = useMotionOk();
-  const [t, setT] = useState(0);
-  const [playing, setPlaying] = useState(true);
+  const [t, setT] = useState(PREVIEW);
+  const [w, setW] = useState(0);
+  const [active, setActive] = useState(0);
+  const target = useRef(PREVIEW);
+  const shown = useRef(PREVIEW);
+  const primed = useRef(false);
 
-  // Reduced motion: no playback; open on the finished loop and let chapters jump.
+  const beats = () => Array.from(root.current?.querySelectorAll<HTMLElement>('[data-beat]') ?? []);
+  const lineY = () => {
+    const vh = window.innerHeight;
+    if (window.matchMedia('(min-width: 1024px)').matches) return vh * 0.55;
+    const sb = stageRef.current?.getBoundingClientRect().bottom ?? 0;
+    return sb + (vh - sb) * 0.4;
+  };
+
   useEffect(() => {
-    if (mounted && !ok) {
-      setPlaying(false);
-      setT(TOTAL - 0.01);
-    }
+    if (!mounted) return;
+    const size = () =>
+      root.current?.style.setProperty('--atlas-stage', `${stageRef.current?.offsetHeight ?? 0}px`);
+    const measure = () => {
+      const vh = window.innerHeight;
+      const line = lineY();
+      let idx = 0;
+      let tt = 0;
+      beats().forEach((el, i) => {
+        const c = CHAPTERS[Number(el.dataset.beat)] ?? CHAPTERS[0]!;
+        const r = el.getBoundingClientRect();
+        // the opening chapter starts as soon as its text enters the screen
+        const from = i === 0 ? Math.max(vh, line) : line;
+        if (i > 0 && r.top > line) return;
+        const u = clamp01((from - r.top) / (from - line + r.height));
+        idx = Number(el.dataset.beat);
+        tt = ok ? lerp(c.from, c.to - 0.01, u) : c.still;
+      });
+      target.current = tt;
+      setActive(idx);
+      if (!ok || !primed.current) {
+        primed.current = true;
+        shown.current = tt;
+        setT(tt);
+      }
+    };
+    const onResize = () => {
+      size();
+      measure();
+    };
+    onResize();
+    window.addEventListener('scroll', measure, { passive: true });
+    window.addEventListener('resize', onResize);
+    return () => {
+      window.removeEventListener('scroll', measure);
+      window.removeEventListener('resize', onResize);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted, ok]);
 
+  // ease the shown clock toward the scroll target, and run the ambient clock
   useEffect(() => {
-    if (!ok || !visible || !playing) return;
+    if (!ok || !near) return;
     let raf = 0;
     let last = performance.now();
     const tick = (now: number) => {
       const dt = Math.min(0.1, (now - last) / 1000);
       last = now;
-      setT((v) => (v + dt) % TOTAL);
+      const d = target.current - shown.current;
+      shown.current = Math.abs(d) < 0.002 ? target.current : shown.current + d * (1 - Math.exp(-dt * 7));
+      setT(shown.current);
+      setW((v) => v + dt);
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [ok, visible, playing]);
-
-  const chapter = CHAPTERS.findIndex((c) => t >= c.from && t < c.to);
-  const ch = CHAPTERS[Math.max(0, chapter)]!;
-  const box = camera(t);
-  const state = stateAt(t);
+  }, [ok, near]);
 
   const jump = (i: number) => {
-    const c = CHAPTERS[i]!;
-    setT(ok ? c.from + 0.01 : c.to - 0.05);
+    const el = beats().find((b) => Number(b.dataset.beat) === i);
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const top = i === 0 ? r.top - 24 : r.top - lineY() + Math.min(r.height * 0.2, 160);
+    window.scrollTo({ top: window.scrollY + top, behavior: ok ? 'smooth' : 'auto' });
   };
 
   return (
-    <figure ref={ref} className="card not-prose my-10 overflow-hidden">
+    <JourneyCtx.Provider value={{ active }}>
+      <div
+        ref={root}
+        className="relative my-12 pb-[16vh] lg:ml-[calc(50%_-_min(590px,_50vw_-_40px))] lg:grid lg:w-[min(1180px,_100vw_-_80px)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.5fr)] lg:gap-14"
+      >
+        <div className="contents lg:order-2 lg:block">
+          <div
+            ref={stageRef}
+            className="not-prose sticky top-0 z-20 -mx-4 bg-bg px-4 pb-3 pt-3 sm:-mx-6 sm:px-6 lg:top-[calc(50vh_-_14rem)] lg:mx-0 lg:bg-transparent lg:p-0"
+          >
+            <Stage t={t} w={w} ok={ok} onJump={jump} />
+            <div className="pointer-events-none absolute inset-x-0 top-full h-6 bg-gradient-to-b from-bg to-transparent lg:hidden" />
+          </div>
+        </div>
+        <div className="relative lg:order-1">{children}</div>
+      </div>
+    </JourneyCtx.Provider>
+  );
+};
+
+export const AtlasBeat = ({ scene, children }: { scene: string; children: ReactNode }) => {
+  const { active } = useContext(JourneyCtx);
+  const i = Math.max(0, CHAPTERS.findIndex((c) => c.id === scene));
+  const c = CHAPTERS[i]!;
+  return (
+    <section data-beat={i} style={{ minHeight: `${Math.max(55, (c.to - c.from) * 13)}vh` }}>
+      <div
+        className={cn(
+          'sticky top-[calc(var(--atlas-stage,0px)_+_1.25rem)] pb-10 pt-1 transition-opacity duration-500 lg:top-[26vh] [&_h3]:mt-0 [&_h3]:text-[22px] [&_h3]:leading-snug [&_h3]:tracking-[-0.01em] [&_p]:my-3',
+          i === active ? 'opacity-100' : 'opacity-25'
+        )}
+      >
+        <p className="not-prose mb-2 flex items-center gap-2 text-[12px] font-medium text-accent">
+          <span className="font-mono">{String(i + 1).padStart(2, '0')}</span>
+          <span className="h-px w-6 bg-accent/50" />
+          {c.label}
+        </p>
+        {children}
+      </div>
+    </section>
+  );
+};
+
+export const AtlasStats = () => (
+  <ul className="not-prose mt-4 flex flex-wrap gap-2">
+    {['6 apps', '~50 capabilities', '11 states · 9 events', '< 5 s voice to execution'].map((s) => (
+      <li key={s} className="rounded-full bg-accent/10 px-2.5 py-1 font-mono text-[12px] text-accent">
+        {s}
+      </li>
+    ))}
+  </ul>
+);
+
+const Stage = ({ t, w, ok, onJump }: { t: number; w: number; ok: boolean; onJump: (i: number) => void }) => {
+  const idx = t >= TOTAL ? CHAPTERS.length - 1 : Math.max(0, CHAPTERS.findIndex((c) => t >= c.from && t < c.to));
+  const ch = CHAPTERS[idx]!;
+  const box = camera(t);
+  const state = stateAt(t);
+  return (
+    <div className="card overflow-hidden">
       <div className="relative bg-[radial-gradient(ellipse_at_50%_0%,hsl(var(--accent)/0.06),transparent_65%)]">
         <svg
           viewBox={box.map((v) => v.toFixed(2)).join(' ')}
           className="block aspect-video w-full"
           role="img"
-          aria-label={`ATLAS explainer, chapter: ${ch.title}`}
+          aria-label={`ATLAS diagram, chapter ${idx + 1} of ${CHAPTERS.length}: ${ch.label}`}
         >
           <defs>
             <radialGradient id="af-orb" cx="35%" cy="30%" r="75%">
@@ -287,110 +362,55 @@ export const AtlasFilm = () => {
             </clipPath>
           </defs>
 
-          <Wires t={t} />
-          <UserStation t={t} />
-          <Orb t={t} />
+          <Wires t={t} w={w} />
+          <UserStation t={t} w={w} />
+          <Orb t={t} w={w} />
           <Registry t={t} />
           <PlanBox t={t} />
           <Gate t={t} />
-          <Executor t={t} />
+          <Executor t={t} w={w} />
           <Frontend t={t} state={state} />
           <Evidence t={t} />
           <Packets t={t} />
           <LoopToken t={t} />
         </svg>
 
-        {/* chapter title card, bottom-left over the stage */}
         <AnimatePresence mode="wait" initial={false}>
           <motion.div
-            key={ch.label}
-            initial={ok ? { opacity: 0, y: 8 } : false}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }}
-            transition={{ duration: 0.3 }}
-            className="pointer-events-none absolute left-3 top-3 rounded-full bg-fg px-3 py-1 text-[11px] font-medium text-white sm:left-4 sm:top-4 sm:text-xs"
-          >
-            {chapter + 1}/{CHAPTERS.length} · {ch.label}
-          </motion.div>
-        </AnimatePresence>
-      </div>
-
-      {/* chapters + scrubber */}
-      <div className="border-t border-border px-4 pt-4 sm:px-5">
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => {
-              if (!ok) return;
-              if (!playing && t >= TOTAL - 0.1) setT(0);
-              setPlaying((p) => !p);
-            }}
-            disabled={!ok}
-            aria-label={playing ? 'Pause' : 'Play'}
-            className="focus-ring grid h-9 w-9 shrink-0 place-items-center rounded-full bg-fg text-white transition hover:bg-black/80 disabled:opacity-40"
-          >
-            {playing ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-          </button>
-          <ol className="no-scrollbar flex flex-1 gap-1 overflow-x-auto">
-            {CHAPTERS.map((c, i) => {
-              const p = seg(t, c.from, c.to);
-              return (
-                <li key={c.label} className="min-w-[64px] flex-1">
-                  <button
-                    type="button"
-                    onClick={() => jump(i)}
-                    className={cn(
-                      'focus-ring w-full rounded-lg px-1 pb-1.5 pt-1 text-left text-[11.5px] transition-colors',
-                      i === chapter ? 'text-fg' : 'text-subtle hover:text-fg'
-                    )}
-                  >
-                    <span className="block truncate font-medium">{c.label}</span>
-                    <span className="mt-1 block h-1 overflow-hidden rounded-full bg-fg/10">
-                      <span className="block h-full rounded-full bg-accent" style={{ width: `${p * 100}%` }} />
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
-          <button
-            type="button"
-            onClick={() => {
-              setT(0);
-              if (ok) setPlaying(true);
-            }}
-            aria-label="Restart"
-            className="focus-ring grid h-9 w-9 shrink-0 place-items-center rounded-full border border-border text-muted transition hover:text-fg"
-          >
-            <RotateCcw className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
-      <div className="min-h-[124px] px-5 pb-5 pt-3" aria-live="polite">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={ch.label}
+            key={ch.id}
             initial={ok ? { opacity: 0, y: 6 } : false}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, y: -4 }}
             transition={{ duration: 0.25 }}
+            className="pointer-events-none absolute left-3 top-3 rounded-full bg-fg px-3 py-1 text-[11px] font-medium text-white sm:left-4 sm:top-4 sm:text-xs"
           >
-            <p className="text-[16px] font-semibold leading-snug">{ch.title}</p>
-            <p className="mt-1 text-sm leading-relaxed text-muted">{ch.body}</p>
-            {ch.label === 'Whole loop' && (
-              <ul className="mt-3 flex flex-wrap gap-2">
-                {['6 apps', '~50 capabilities', '11 states · 9 events', '< 5 s voice to execution'].map((s) => (
-                  <li key={s} className="rounded-full bg-accent/10 px-2.5 py-1 font-mono text-[11.5px] text-accent">
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            )}
+            {idx + 1}/{CHAPTERS.length} · {ch.label}
           </motion.div>
         </AnimatePresence>
       </div>
-    </figure>
+
+      <ol className="flex gap-1 border-t border-border px-2 py-2 sm:px-3">
+        {CHAPTERS.map((c, i) => (
+          <li key={c.id} className="min-w-0 flex-1">
+            <button
+              type="button"
+              onClick={() => onJump(i)}
+              aria-label={`Go to chapter ${i + 1}: ${c.label}`}
+              className={cn(
+                'focus-ring w-full rounded-md px-1 pb-1 pt-0.5 text-left text-[10.5px] transition-colors sm:text-[11.5px]',
+                i === idx ? 'text-fg' : 'text-subtle hover:text-fg'
+              )}
+            >
+              <span className="block font-medium sm:hidden">{i + 1}</span>
+              <span className="hidden truncate font-medium sm:block">{c.label}</span>
+              <span className="mt-1 block h-1 overflow-hidden rounded-full bg-fg/10">
+                <span className="block h-full origin-left rounded-full bg-accent" style={{ transform: `scaleX(${seg(t, c.from, c.to)})` }} />
+              </span>
+            </button>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 };
 
@@ -404,7 +424,7 @@ const Label = ({ x, y, children, anchor = 'middle', size = 17, className }: { x:
   </text>
 );
 
-const Wires = ({ t }: { t: number }) => {
+const Wires = ({ t, w }: { t: number; w: number }) => {
   const draw = t >= 3 ? 1 : ease(seg(t, 0.9, 2.8));
   const flow = t >= 36;
   const paths = [
@@ -429,7 +449,7 @@ const Wires = ({ t }: { t: number }) => {
             stroke="hsl(var(--accent))"
             strokeWidth={3}
             strokeDasharray="0.04 0.06"
-            strokeDashoffset={-(t - 36) * 0.25}
+            strokeDashoffset={-w * 0.25}
             opacity={seg(t, 36, 36.8) * (1 - seg(t, 41.4, 42))}
           />
         ))}
@@ -440,7 +460,7 @@ const Wires = ({ t }: { t: number }) => {
   );
 };
 
-const UserStation = ({ t }: { t: number }) => {
+const UserStation = ({ t, w }: { t: number; w: number }) => {
   const a = appear(t, 0);
   const amp = seg(t, 3.3, 3.8) * (1 - seg(t, 6.0, 6.6));
   const typed = seg(t, 6.0, 8.4);
@@ -453,11 +473,11 @@ const UserStation = ({ t }: { t: number }) => {
       <Label x={116} y={150} anchor="start" size={16} className="fill-subtle">
         Voice command
       </Label>
-      {amp > 0 && <circle cx={180} cy={235} r={44 + amp * 18 * Math.abs(Math.sin(t * 6))} fill="hsl(var(--accent))" opacity={0.15} />}
+      {amp > 0 && <circle cx={180} cy={235} r={44 + amp * 18 * Math.abs(Math.sin(w * 6))} fill="hsl(var(--accent))" opacity={0.15} />}
       <circle cx={180} cy={235} r={44} fill={amp > 0 ? 'hsl(var(--accent))' : 'hsl(var(--fg))'} />
       <Mic x={158} y={213} width={44} height={44} color="white" strokeWidth={2} />
       {Array.from({ length: 16 }, (_, i) => {
-        const h = 6 + amp * 70 * Math.abs(Math.sin(t * 9 + i * 0.7)) * (0.55 + 0.45 * Math.sin(i * 1.3 + t * 5));
+        const h = 6 + amp * 70 * Math.abs(Math.sin(w * 9 + i * 0.7)) * (0.55 + 0.45 * Math.sin(i * 1.3 + w * 5));
         return <rect key={i} x={248 + i * 10} y={235 - Math.max(3, h) / 2} width={5} height={Math.max(3, h)} rx={2.5} fill={amp > 0 ? 'hsl(var(--accent))' : 'hsl(var(--fg))'} opacity={amp > 0 ? 0.9 : 0.25} />;
       })}
       <Label x={116} y={335} anchor="start" size={15} className="fill-muted">
@@ -505,16 +525,16 @@ const UserStation = ({ t }: { t: number }) => {
   );
 };
 
-const Orb = ({ t }: { t: number }) => {
+const Orb = ({ t, w }: { t: number; w: number }) => {
   const a = appear(t, 1);
   const busy = Math.max(win(t, 3.8, 6.8), win(t, 11.2, 13.0));
   const pulse = seg(t, 12.2, 13.0);
   return (
     <g opacity={a}>
       {pulse > 0 && pulse < 1 && <circle cx={ORB[0]} cy={ORB[1]} r={62 + pulse * 80} fill="none" stroke="hsl(var(--accent))" strokeWidth={3} opacity={1 - pulse} />}
-      <ellipse cx={ORB[0]} cy={ORB[1]} rx={96} ry={26} fill="none" stroke="hsl(var(--accent))" strokeOpacity={0.35 + busy * 0.4} strokeWidth={2} transform={`rotate(${t * 40} ${ORB[0]} ${ORB[1]})`} />
-      <ellipse cx={ORB[0]} cy={ORB[1]} rx={26} ry={96} fill="none" stroke="hsl(var(--fg))" strokeOpacity={0.18 + busy * 0.3} strokeWidth={2} transform={`rotate(${-t * 28} ${ORB[0]} ${ORB[1]})`} />
-      <circle cx={ORB[0]} cy={ORB[1]} r={62 + busy * 4 * Math.sin(t * 10)} fill="url(#af-orb)" />
+      <ellipse cx={ORB[0]} cy={ORB[1]} rx={96} ry={26} fill="none" stroke="hsl(var(--accent))" strokeOpacity={0.35 + busy * 0.4} strokeWidth={2} transform={`rotate(${w * 40} ${ORB[0]} ${ORB[1]})`} />
+      <ellipse cx={ORB[0]} cy={ORB[1]} rx={26} ry={96} fill="none" stroke="hsl(var(--fg))" strokeOpacity={0.18 + busy * 0.3} strokeWidth={2} transform={`rotate(${-w * 28} ${ORB[0]} ${ORB[1]})`} />
+      <circle cx={ORB[0]} cy={ORB[1]} r={62 + busy * 4 * Math.sin(w * 10)} fill="url(#af-orb)" />
       <circle cx={ORB[0] - 18} cy={ORB[1] - 22} r={14} fill="white" opacity={0.35} />
       <Label x={ORB[0]} y={ORB[1] + 132} size={18} className="font-semibold">
         {t < 8.8 ? 'Gemini Live API' : 'Gemini 2.5 Flash'}
@@ -730,7 +750,7 @@ const Gate = ({ t }: { t: number }) => {
   );
 };
 
-const Executor = ({ t }: { t: number }) => {
+const Executor = ({ t, w }: { t: number; w: number }) => {
   const a = appear(t, 5);
   const slack = t >= 26 && t < 36;
   const [px, py] = track(t, [
@@ -749,7 +769,7 @@ const Executor = ({ t }: { t: number }) => {
     { draw: seg(t, 26.9, 27.3), keep: t < 28.7, bad: true },
     { draw: seg(t, 28.7, 29.1), keep: t < 30.6, bad: false }
   ];
-  const shake = t >= 27.3 && t < 27.9 ? Math.sin(t * 60) * 5 * (1 - seg(t, 27.3, 27.9)) : 0;
+  const shake = t >= 27.3 && t < 27.9 ? Math.sin(w * 60) * 5 * (1 - seg(t, 27.3, 27.9)) : 0;
   const flash = Math.max(...SHOT_T.map((s) => win(t, s, s + 0.35, 0.12)));
   const retry = win(t, 27.9, 28.9, 0.15);
   return (
@@ -836,7 +856,7 @@ const Executor = ({ t }: { t: number }) => {
       {retry > 0 && (
         <g opacity={retry}>
           <circle cx={1495} cy={586} r={34} fill="none" stroke="hsl(var(--accent))" strokeOpacity={0.2} strokeWidth={4} />
-          <circle cx={1495} cy={586} r={34} fill="none" stroke="hsl(var(--accent))" strokeWidth={4} strokeDasharray="60 200" transform={`rotate(${t * 520} 1495 586)`} />
+          <circle cx={1495} cy={586} r={34} fill="none" stroke="hsl(var(--accent))" strokeWidth={4} strokeDasharray="60 200" transform={`rotate(${w * 520} 1495 586)`} />
         </g>
       )}
       <g opacity={win(t, 27.3, 29.0)}>
