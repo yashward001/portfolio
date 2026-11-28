@@ -38,9 +38,13 @@ Most matching engine demos optimize for raw throughput but skip determinism, rep
 
 I built a deterministic engine path where the same command stream always yields the same event stream and final state hash. The architecture follows clean domain boundaries and event-sourced replay.
 
-<ArchitectureDiagram title="NanoExchange Engine + Replay Flow" variant="pipeline" />
+Here's that guarantee as a toy you can watch: a dozen commands go through a small price-time-priority book, the events and final state are hashed, and then the log is replayed through a fresh engine.
+
+<OrderBookReplay />
 
 ## Architecture
+
+<NanoRail />
 
 - **Core domain (`src/core`)**
   - `command.h`: fixed-width command model (`New`, `Cancel`, `Modify`)

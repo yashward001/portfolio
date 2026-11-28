@@ -37,7 +37,7 @@ Students receive high volumes of fragmented academic communication across classe
 
 I designed Loop.AI as a full-stack pipeline that ingests Gmail threads, classifies intent, and generates concise summaries with actionable labels (urgent, deadlines, admin, opportunities).
 
-<ArchitectureDiagram title="Loop.AI Request Flow" variant="product" />
+<InboxTriage />
 
 ## Architecture
 
@@ -45,6 +45,8 @@ I designed Loop.AI as a full-stack pipeline that ingests Gmail threads, classifi
 - **Backend (FastAPI):** OAuth callbacks, message sync jobs, and summarization endpoints.
 - **Storage (PostgreSQL):** normalized thread metadata + summary cache for fast rendering.
 - **Inference layer:** prompt pipeline for concise summary + category extraction.
+
+<LoopRail />
 
 ## Key Technical Choices
 

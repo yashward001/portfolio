@@ -37,7 +37,9 @@ Manual options strategy execution is difficult under high volatility because sig
 
 I built a research-to-deployment pipeline centered on long straddle setups. A DQN-based policy layer and transformer-driven sequence features were combined with sentiment inputs to evaluate potential entries and exits under risk constraints.
 
-<ArchitectureDiagram title="StraddleAI Research Pipeline" variant="pipeline" />
+A long straddle is a bet on movement, not direction: you buy a call and a put at the same strike, so a big move either way pays and a quiet market costs you the premium. That makes timing the whole game.
+
+<StraddlePayoff />
 
 ## Architecture
 
@@ -46,11 +48,15 @@ I built a research-to-deployment pipeline centered on long straddle setups. A DQ
 - **Policy layer:** DQN agent trained for risk-adjusted action selection.
 - **Evaluation layer:** out-of-sample backtests and scenario stress checks.
 
+<StraddleRail />
+
 ## Key Technical Choices
 
 1. **DQN for sequential decision policy:** suitable for action-value optimization under evolving states.
 2. **Transformer feature encoder:** stronger temporal representation than hand-crafted indicators alone.
 3. **Risk constraints in decision loop:** bounded exposures and controlled strategy behavior.
+
+<DqnLoop />
 
 Tradeoff: model complexity increased experimentation cost, but improved flexibility across different volatility regimes.
 

@@ -52,83 +52,7 @@ Playwright resolves each capability ID, executes with retry logic, captures a bo
 
 Voice input bypasses a separate STT step entirely — Gemini Live API streams microphone audio directly, cutting latency between speaking and plan generation.
 
-<figure className="my-8 overflow-hidden border border-[#003d0f] bg-[#0a0f0a] p-4">
-<svg viewBox="0 0 760 275" width="100%" fontFamily="ui-monospace, monospace">
-  <defs>
-    <marker id="sm-ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-      <path d="M0,0 L8,3 L0,6 Z" fill="#00ff41" />
-    </marker>
-    <marker id="sm-ah-dim" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-      <path d="M0,0 L8,3 L0,6 Z" fill="#006622" />
-    </marker>
-  </defs>
-
-  {/* ── Row 1 states ── */}
-  <rect x="25" y="50" width="110" height="40" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="80" y="74" textAnchor="middle" fontSize="11" fill="#00ff41">idle</text>
-
-  <rect x="165" y="50" width="110" height="40" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="220" y="74" textAnchor="middle" fontSize="11" fill="#00ff41">listening</text>
-
-  <rect x="305" y="50" width="110" height="40" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="360" y="74" textAnchor="middle" fontSize="10" fill="#00ff41">transcribing</text>
-
-  <rect x="445" y="50" width="110" height="40" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="500" y="74" textAnchor="middle" fontSize="11" fill="#00ff41">planning</text>
-
-  <rect x="585" y="50" width="140" height="40" rx="6" fill="#0a0f0a" stroke="#00ff41" strokeWidth="1.5"/>
-  <text x="655" y="67" textAnchor="middle" fontSize="9" fill="#00ff41">awaiting</text>
-  <text x="655" y="81" textAnchor="middle" fontSize="9" fill="#00ff41">_approval</text>
-
-  {/* ── Row 1 arrows ── */}
-  <line x1="135" y1="70" x2="163" y2="70" stroke="#00ff41" strokeWidth="1" markerEnd="url(#sm-ah)"/>
-  <line x1="275" y1="70" x2="303" y2="70" stroke="#00ff41" strokeWidth="1" markerEnd="url(#sm-ah)"/>
-  <line x1="415" y1="70" x2="443" y2="70" stroke="#00ff41" strokeWidth="1" markerEnd="url(#sm-ah)"/>
-  <line x1="555" y1="70" x2="583" y2="70" stroke="#00ff41" strokeWidth="1" markerEnd="url(#sm-ah)"/>
-  <text x="569" y="63" textAnchor="middle" fontSize="7" fill="#006622">PLAN_READY</text>
-
-  {/* ── awaiting_approval → executing ── */}
-  <path d="M 655 90 L 655 125 L 80 125 L 80 160" stroke="#00ff41" strokeWidth="1" fill="none" markerEnd="url(#sm-ah)"/>
-  <text x="370" y="121" textAnchor="middle" fontSize="7" fill="#006622">USER_APPROVED</text>
-
-  {/* ── Row 2 states ── */}
-  <rect x="25" y="160" width="110" height="40" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="80" y="184" textAnchor="middle" fontSize="11" fill="#00ff41">executing</text>
-
-  <rect x="165" y="160" width="110" height="40" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="220" y="184" textAnchor="middle" fontSize="9" fill="#00ff41">step_success</text>
-
-  <rect x="305" y="160" width="110" height="40" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="360" y="184" textAnchor="middle" fontSize="11" fill="#00ff41">retrying</text>
-
-  <rect x="445" y="160" width="110" height="40" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="500" y="184" textAnchor="middle" fontSize="9" fill="#00ff41">step_failed</text>
-
-  <rect x="585" y="160" width="110" height="40" rx="6" fill="#0a0f0a" stroke="#00ff41" strokeWidth="1.5"/>
-  <text x="640" y="184" textAnchor="middle" fontSize="11" fill="#00ff41">completed</text>
-
-  {/* ── Row 2 arrows ── */}
-  <line x1="135" y1="180" x2="163" y2="180" stroke="#00ff41" strokeWidth="1" markerEnd="url(#sm-ah)"/>
-  <text x="149" y="174" textAnchor="middle" fontSize="7" fill="#006622">STEP_DONE</text>
-
-  <line x1="275" y1="180" x2="303" y2="180" stroke="#00ff41" strokeWidth="1" markerEnd="url(#sm-ah)"/>
-
-  <line x1="415" y1="180" x2="443" y2="180" stroke="#00ff41" strokeWidth="1" markerEnd="url(#sm-ah)"/>
-  <text x="429" y="174" textAnchor="middle" fontSize="7" fill="#006622">STEP_FAILED</text>
-
-  <line x1="555" y1="180" x2="583" y2="180" stroke="#00ff41" strokeWidth="1" markerEnd="url(#sm-ah)"/>
-
-  {/* ── step_failed → retrying (curved back) ── */}
-  <path d="M 500 160 C 500 135 360 135 360 160" stroke="#006622" strokeWidth="1" fill="none" markerEnd="url(#sm-ah-dim)"/>
-  <text x="430" y="129" textAnchor="middle" fontSize="7" fill="#006622">retry</text>
-
-  {/* ── error state ── */}
-  <rect x="445" y="228" width="110" height="38" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="500" y="251" textAnchor="middle" fontSize="11" fill="#006622">error</text>
-  <line x1="500" y1="200" x2="500" y2="226" stroke="#006622" strokeWidth="1" markerEnd="url(#sm-ah-dim)"/>
-</svg>
-<figcaption className="mt-2 text-center font-mono text-[10px] text-[#006622]">State machine — 11 states / 9 events</figcaption>
-</figure>
+<AtlasStateMachine />
 
 ## Architecture
 
@@ -151,43 +75,9 @@ A **Firestore capability registry** stores every automatable UI action as a stru
 
 User intent is sent to **Gemini 2.5 Flash** alongside the full capability registry formatted as LLM tools. Gemini returns a structured execution plan as a sequence of capability IDs with filled parameters — no free-form scripting.
 
-<figure className="my-8 overflow-hidden border border-[#003d0f] bg-[#0a0f0a] p-4">
-<svg viewBox="0 0 760 220" width="100%" fontFamily="ui-monospace, monospace">
-  {/* ── Document card ── */}
-  <rect x="40" y="20" width="680" height="180" rx="10" fill="#000" stroke="#003d0f" strokeWidth="1"/>
+<AtlasCapabilityDoc />
 
-  {/* ── Header label ── */}
-  <text x="56" y="44" fontSize="9" fill="#006622">{"// capability document"}</text>
-
-  {/* ── Vertical divider ── */}
-  <line x1="410" y1="34" x2="410" y2="192" stroke="#003d0f" strokeWidth="1"/>
-
-  {/* ── Left column — names ── */}
-  <text x="62" y="72" fontSize="10" fill="#006622">action_type</text>
-  <text x="62" y="100" fontSize="10" fill="#006622">selector</text>
-  <text x="62" y="128" fontSize="10" fill="#006622">description</text>
-  <text x="62" y="156" fontSize="10" fill="#006622">parameters</text>
-
-  {/* ── Left column — values ── */}
-  <text x="185" y="72" fontSize="10" fill="#00ff41">"click"</text>
-  <text x="185" y="100" fontSize="10" fill="#00ff41">"#submit-btn"</text>
-  <text x="185" y="128" fontSize="10" fill="#00cc33">"Submit the form"</text>
-  <text x="185" y="156" fontSize="10" fill="#00cc33">{"{ target: string }"}</text>
-
-  {/* ── Right column — names ── */}
-  <text x="426" y="72" fontSize="10" fill="#006622">preconditions</text>
-  <text x="426" y="100" fontSize="10" fill="#006622">risk_level</text>
-  <text x="426" y="128" fontSize="10" fill="#006622">confidence_score</text>
-  <text x="426" y="156" fontSize="10" fill="#006622">auto_heal_history</text>
-
-  {/* ── Right column — values ── */}
-  <text x="556" y="72" fontSize="10" fill="#00cc33">["form.is_valid"]</text>
-  <text x="556" y="100" fontSize="10" fill="#00ff41">"medium"</text>
-  <text x="556" y="128" fontSize="10" fill="#00ff41">0.94</text>
-  <text x="556" y="156" fontSize="10" fill="#006622">[ ]</text>
-</svg>
-<figcaption className="mt-2 text-center font-mono text-[10px] text-[#006622]">Firestore capability document schema</figcaption>
-</figure>
+<AtlasPlanner />
 
 ### Layer 3 — Execution (Playwright)
 
@@ -207,52 +97,7 @@ A **WebSocket bridge** streams live execution state to the frontend:
 - Retry indicators and approval gate prompts
 - Full execution transcript on completion
 
-<figure className="my-8 overflow-hidden border border-[#003d0f] bg-[#0a0f0a] p-4">
-<svg viewBox="0 0 760 120" width="100%" fontFamily="ui-monospace, monospace">
-  <defs>
-    <marker id="pipe-ah" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
-      <path d="M0,0 L8,3 L0,6 Z" fill="#00ff41" />
-    </marker>
-  </defs>
-
-  {/* ── Stage 1 — Voice Input ── */}
-  <rect x="10" y="14" width="120" height="56" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="70" y="38" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#00ff41">Voice Input</text>
-  <text x="70" y="54" textAnchor="middle" fontSize="8" fill="#006622">Gemini Live API</text>
-  <circle cx="70" cy="84" r="3" fill="#00ff41"/>
-
-  {/* ── Stage 2 — Plan Generation ── */}
-  <rect x="162" y="14" width="120" height="56" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="222" y="38" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#00ff41">Plan Generation</text>
-  <text x="222" y="54" textAnchor="middle" fontSize="8" fill="#006622">capability IDs[]</text>
-  <circle cx="222" cy="84" r="3" fill="#00ff41"/>
-
-  {/* ── Stage 3 — Playwright Exec ── */}
-  <rect x="314" y="14" width="120" height="56" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="374" y="38" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#00ff41">Playwright Exec</text>
-  <text x="374" y="54" textAnchor="middle" fontSize="8" fill="#006622">step-by-step</text>
-  <circle cx="374" cy="84" r="3" fill="#00ff41"/>
-
-  {/* ── Stage 4 — Approval Gate (highlighted) ── */}
-  <rect x="466" y="14" width="120" height="56" rx="6" fill="#0a0f0a" stroke="#00ff41" strokeWidth="1.5"/>
-  <text x="526" y="38" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#00ff41">Approval Gate</text>
-  <text x="526" y="54" textAnchor="middle" fontSize="8" fill="#006622">risk_level check</text>
-  <circle cx="526" cy="84" r="3" fill="#00ff41"/>
-
-  {/* ── Stage 5 — WebSocket Feed ── */}
-  <rect x="618" y="14" width="120" height="56" rx="6" fill="#0a0f0a" stroke="#003d0f" strokeWidth="1"/>
-  <text x="678" y="38" textAnchor="middle" fontSize="10" fontWeight="bold" fill="#00ff41">WebSocket Feed</text>
-  <text x="678" y="54" textAnchor="middle" fontSize="8" fill="#006622">live status</text>
-  <circle cx="678" cy="84" r="3" fill="#00ff41"/>
-
-  {/* ── Arrows ── */}
-  <line x1="130" y1="42" x2="160" y2="42" stroke="#00ff41" strokeWidth="1" markerEnd="url(#pipe-ah)"/>
-  <line x1="282" y1="42" x2="312" y2="42" stroke="#00ff41" strokeWidth="1" markerEnd="url(#pipe-ah)"/>
-  <line x1="434" y1="42" x2="464" y2="42" stroke="#00ff41" strokeWidth="1" markerEnd="url(#pipe-ah)"/>
-  <line x1="586" y1="42" x2="616" y2="42" stroke="#00ff41" strokeWidth="1" markerEnd="url(#pipe-ah)"/>
-</svg>
-<figcaption className="mt-2 text-center font-mono text-[10px] text-[#006622]">Real-time execution pipeline</figcaption>
-</figure>
+<AtlasEvidence />
 
 ### Voice-First Interaction
 

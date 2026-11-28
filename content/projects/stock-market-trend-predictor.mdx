@@ -34,11 +34,17 @@ Trend prediction in equity data is noisy and prone to overfitting, requiring dis
 
 Trained sequence models on NASDAQ historical windows, then evaluated directional movement predictions under strict out-of-sample setups.
 
+Market data punishes sloppy validation: a random train/test split lets the model peek at the future. Every evaluation here walks forward in time instead.
+
+<WalkForward />
+
 ## Architecture
 
 - Feature preparation pipeline for lagged and normalized series
 - LSTM training loop with early-stopping and windowed validation
 - Evaluation module for directional accuracy and error diagnostics
+
+<LstmUnroll />
 
 ## Results
 

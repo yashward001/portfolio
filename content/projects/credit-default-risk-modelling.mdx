@@ -34,11 +34,21 @@ Default prediction requires high recall on risky segments while preserving preci
 
 Designed temporal aggregation features, trained gradient boosting models, and calibrated ranking thresholds for practical decision workflows.
 
+The easiest way to fool yourself in credit modelling is temporal leakage: a feature that quietly includes information from after the decision date. Every aggregate here is computed from windows that end at the snapshot.
+
+<LeakSafeWindows />
+
 ## Architecture
 
 - Feature engineering pipeline with leak-safe temporal windows
 - LightGBM training + calibration and ranking metrics evaluation
 - Importance analysis for model explainability
+
+<CreditRail />
+
+With defaults a small minority, accuracy is meaningless: predicting "no default" for everyone scores well and catches no one. What matters is how many risky borrowers you catch for each false alarm, and that depends on where the threshold sits.
+
+<ThresholdExplorer />
 
 ## Results
 

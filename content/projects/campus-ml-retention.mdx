@@ -37,7 +37,7 @@ General-purpose coding copilots often miss project context, produce hallucinated
 
 I built a multi-agent architecture where each agent specializes in one workflow (generation, refactor, review). A retrieval layer indexes project docs and code chunks into FAISS, then routes context to the right agent before response generation.
 
-<ArchitectureDiagram title="SWEE-AI Agent and Retrieval Pipeline" variant="ml" />
+<SweeRouter />
 
 ## Architecture
 
@@ -45,6 +45,8 @@ I built a multi-agent architecture where each agent specializes in one workflow 
 - **API layer (FastAPI):** orchestration, agent routing, and tool-call execution.
 - **Retrieval layer (FAISS):** embedding index over code + docs for context grounding.
 - **Agent system:** role-specific prompts and output validation for predictable behavior.
+
+<SweeRail />
 
 ## Key Technical Choices
 
