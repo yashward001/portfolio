@@ -7,6 +7,7 @@ import {
   AtlasPlanner,
   AtlasStateMachine
 } from '@/components/mdx/projects/atlas';
+import { AtlasFilm } from '@/components/mdx/projects/atlas-film';
 import { LeakSafeWindows, ThresholdExplorer } from '@/components/mdx/projects/credit';
 import { CropPlanner } from '@/components/mdx/projects/farmora';
 import { PetRadar } from '@/components/mdx/projects/fetchmehome';
@@ -59,6 +60,7 @@ export const mdxComponents: MDXComponents = {
   ProtocolRace,
   MechanismSplit,
   // per-project figures
+  AtlasFilm,
   AtlasStateMachine,
   AtlasPlanner,
   AtlasEvidence,

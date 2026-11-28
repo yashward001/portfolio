@@ -30,6 +30,10 @@ links:
 sortImpact: 98
 ---
 
+One request, start to finish: what happens between saying a sentence and watching ATLAS click through two apps. Let it play, or jump to a chapter.
+
+<AtlasFilm />
+
 ## Problem
 
 Desktop automation splits into two bad options: record-and-replay tools that shatter on any UI change, and scripting APIs that require a developer for every new workflow. Neither handles natural language, neither recovers gracefully from failure, and neither gives you any auditability over what ran and why.
@@ -77,8 +81,6 @@ User intent is sent to **Gemini 2.5 Flash** alongside the full capability regist
 
 <AtlasCapabilityDoc />
 
-<AtlasPlanner />
-
 ### Layer 3 — Execution (Playwright)
 
 The Playwright engine runs each plan step sequentially:
@@ -97,7 +99,6 @@ A **WebSocket bridge** streams live execution state to the frontend:
 - Retry indicators and approval gate prompts
 - Full execution transcript on completion
 
-<AtlasEvidence />
 
 ### Voice-First Interaction
 
